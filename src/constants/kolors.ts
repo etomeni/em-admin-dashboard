@@ -1,11 +1,10 @@
 const themeColors = {
-  primary: "#FFB01F",
-  secondary: "#E2CBA2",
-  tertiary: "#6C6050",
-  bg: "#FFFFE6",
-  dark: "#212121",
-  milk: "#FFFFE6",
-  bodyBg: "#F0F0F0"
+  primary: "#5E17EB",
+  secondary: "#5E17EB2E",
+  tertiary: "#AD89F5",
+  bg: "#F2F2F2",
+  dark: "#161616",
+  border: "#BCBABA",
 };
 
 export default themeColors;

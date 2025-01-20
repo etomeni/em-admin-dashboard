@@ -59,21 +59,22 @@ export function useNewPasswordAuth() {
 
         const data2db = {
             email: getQueryParams('email'),
+            id: getQueryParams("id"),
             password: formData.password,
             confirmPassword: formData.confirmPassword
         };
 
         try {
             const response = (await axios.post(
-                `${apiEndpoint}/auth/setNewPassword`, 
+                `${apiEndpoint}/admin/auth/change-password`, 
                 data2db,
-                {
-                    headers: {
-                        Authorization: `Bearer ${getQueryParams("token")}`,
-                    },
-                }
+                // {
+                //     headers: {
+                //         Authorization: `Bearer ${getQueryParams("token")}`,
+                //     },
+                // }
             )).data;
-            // console.log(response);
+            console.log(response);
             
             setApiResponse({
                 display: true,
@@ -98,11 +99,6 @@ export function useNewPasswordAuth() {
             });
         }
     }
-
-
-    // const onSubmit = useCallback(() => {
-    //     handleSubmit(_onSubmit)
-    // }, []);
 
 
     return {

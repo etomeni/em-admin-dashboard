@@ -34,8 +34,7 @@ export function useCheckAuth() {
         // }
         
         try {
-            const response = (await axios.get(`${apiEndpoint}/auth/reValidateUserAuth`, {
-            // const response = (await axios.get(`${localApiEndpoint}/auth/reValidateUserAuth`, {
+            const response = (await axios.get(`${apiEndpoint}/admin/auth/refresh`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                     // refresh: `Bearer ${refresh_token}`
@@ -43,9 +42,9 @@ export function useCheckAuth() {
             })).data;
             // console.log(response);
 
-            if (response.accessToken && response.refreshToken) {
+            if (response.token.access_token && response.token.refresh_token) {
                 // _handleRefreshToken(response.accessToken, response.refreshToken)
-                _handleRefreshToken(response.accessToken)
+                _handleRefreshToken(response.token.access_token, response.token.refresh_token)
             }
 
     
@@ -54,7 +53,8 @@ export function useCheckAuth() {
     
             return true;
         } catch (error: any) {
-            const err = error.response.data || error;
+            const err = error.response && error.response.data ? error.response.data : error;
+            // const fixedErrorMsg = "Oooops, login failed. please try again.";
             console.log(err);
             setIsLoading(false);
             _logOutUser();
@@ -63,10 +63,31 @@ export function useCheckAuth() {
         }
     }
 
+    const logOutBackendFn = useCallback(async (access_token: string) => {
+        try {
+            const response = (await axios.get(`${apiEndpoint}/admin/auth/logout`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    // refresh: `Bearer ${refresh_token}`
+                }
+            })).data;
+            console.log(response);
+            
+        } catch (error: any) {
+            const err = error.response && error.response.data ? error.response.data : error;
+            // const fixedErrorMsg = "Oooops, login failed. please try again.";
+            console.log(err);
+            // _logOutUser();
+        }
+    }, []);
+
+
+
     return {
         isLoading,
         setIsLoading,
-        reAuthUser
+        reAuthUser,
+        logOutBackendFn
     }
 }
 

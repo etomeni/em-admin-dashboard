@@ -21,7 +21,8 @@ export function useVerifyEmailAuth() {
         message: ""
     });
 
-    const [jwtToken, setJwtToken] = useState(getQueryParams("token"));
+    const use_email = getQueryParams("email");
+    const user_id = getQueryParams("id");
     
     
     const handleChange = (e: any, index: any) => {
@@ -100,19 +101,20 @@ export function useVerifyEmailAuth() {
         });
 
         const data2db = {
-            // email: getQueryParams('email'),
-            code: code.join('')
+            id: user_id,
+            email: use_email,
+            otp: code.join('')
         };
         
         try {
             const response = (await axios.post(
-                `${apiEndpoint}/auth/verifyEmailToken`, 
+                `${apiEndpoint}/admin/auth/verify-otp`, 
                 data2db,
-                {
-                    headers: {
-                        Authorization: `reset-password-token ${jwtToken}`,
-                    },
-                }
+                // {
+                //     headers: {
+                //         Authorization: `reset-password-token ${jwtToken}`,
+                //     },
+                // }
             )).data;
             
             setApiResponse({
@@ -120,6 +122,7 @@ export function useVerifyEmailAuth() {
                 status: true,
                 message: response.message
             });
+
             _setToastNotification({
                 display: true,
                 status: "success",
@@ -129,8 +132,8 @@ export function useVerifyEmailAuth() {
             navigate({
                 pathname: "/auth/create-new-password",
                 search: `?${createSearchParams({ 
-                    email: getQueryParams('email'),
-                    token: jwtToken
+                    id: user_id,
+                    email: use_email,
                 })}`,
             }, {replace: true});
 
@@ -150,12 +153,12 @@ export function useVerifyEmailAuth() {
     const handleResendOtp = async () => {
         try {
             const response = (await axios.post(
-                `${apiEndpoint}/auth/sendPasswordResetEmail`, 
+                `${apiEndpoint}/admin/auth/otp`, 
                 { email: getQueryParams('email') } 
             )).data;
-            // console.log(response);
+            console.log(response);
 
-            setJwtToken(response.token);
+            // setJwtToken(response.token);
   
             _setToastNotification({
                 display: true,
@@ -175,12 +178,7 @@ export function useVerifyEmailAuth() {
         }
     }
 
-
-    // const onSubmit = useCallback(() => {
-    //     handleSubmit(_onSubmit)
-    // }, []);
-
-
+    
     return {
         isSubmitting,
         code, setCode,

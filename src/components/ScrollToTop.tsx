@@ -9,7 +9,7 @@ const ScrollToTop = () => {
     const toastNotification = useSettingStore((state) => state.toastNotification);
     const _setToastNotification = useSettingStore((state) => state._setToastNotification);
 
-    // const { reAuthUser, isLoading } = useCheckAuth();
+    const { reAuthUser, isLoading } = useCheckAuth();
 
     const { pathname } = useLocation();
 
@@ -17,19 +17,19 @@ const ScrollToTop = () => {
         window.scrollTo(0, 0);
     }, [pathname]);
 
-    // useEffect(() => {
-    //     // setIsLoading(false);
-    //     reAuthUser();
-    // }, []);
+    useEffect(() => {
+        // setIsLoading(false);
+        reAuthUser();
+    }, []);
 
 
     return (
         <main>
-            {/* { 
+            { 
                 isLoading ? <LoadingComponent /> : <Outlet />
-            } */}
+            }
 
-            <Outlet />
+            {/* <Outlet /> */}
 
             <SnackbarToast 
                 status={toastNotification.status} 

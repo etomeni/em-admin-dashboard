@@ -1,49 +1,33 @@
 import { create } from "zustand";
 import { getLocalStorage, removeLocalStorageItem, setLocalStorage } from "../util/storage";
 import { userInterface } from "@/typeInterfaces/users.interface";
+import { useCheckAuth } from "@/hooks/useCheckAuth";
 
 /*
 This is a sample of state management with zustand data
 */
 
 const defaultUserEmpty: userInterface = {
-    _id: "",
-    firstName: "",
-    lastName: "",
+    id: "",
+    role_id: "",
     email: "",
-    password: "",
-    balance: 0,
-    role: "user",
-    userType: "artist",
-    phoneNumber: "",
-    country: "",
-    status: false,
-    location: {
-        ip: "",
-        usedIps: [],
-        city: "",
-        region: "",
-        country: "",
-        isp: "",
-        lat: 0,
-        lon: 0
-    },
-    createdAt: "",
-    updatedAt: "",
-    kyc: {
-        isKycSubmitted: false,
-        phoneNumber: "",
-        securityQuestions: []
-    }
+    first_name: "",
+    last_name: "",
+    email_verified: false,
+    is_suspended: false,
+    idempotency_key: "",
+    last_login: "",
+    created_at: "",
+    updated_at: ""
 };
 
 type _typeInterface_ = {
     accessToken: string;
-    // refreshToken: string;
+    refreshToken: string;
     userData: userInterface;
     isLoggedIn: boolean;
-    _loginUser: (user: userInterface, token: string) => void;
-    _handleRefreshToken: (accessToken: string) => void;
+    _loginUser: (user: userInterface, token: string, refreshToken: string) => void;
+    _handleRefreshToken: (accessToken: string, refreshToken: string) => void;
     _autoLogin: (user: userInterface) => void;
     _logOutUser: () => void;
     _handleRestoreUser: () => void;
@@ -58,31 +42,31 @@ type _typeInterface_ = {
 
 export const useUserStore = create<_typeInterface_>((set) => ({
     accessToken: "",
-    // refreshToken: "",
+    refreshToken: "",
     userData: defaultUserEmpty,
     isLoggedIn: false,
-    _loginUser: (user, token) => {
-        // setLocalStorage("refreshToken", refreshToken);
+    _loginUser: (user, token, refreshToken) => {
+        setLocalStorage("refreshToken", refreshToken);
         setLocalStorage("access_token", token);
-        setLocalStorage("user", user);
+        setLocalStorage("user", user || defaultUserEmpty);
     
         set((_state) => {
             return {
-                userData: user,
+                userData: user || defaultUserEmpty,
                 accessToken: token,
-                // refreshToken: refreshToken,
+                refreshToken: refreshToken,
                 isLoggedIn: true,
             };
         });
     },
-    _handleRefreshToken: (accessToken) => {
-        // setLocalStorage("refreshToken", refreshToken);
+    _handleRefreshToken: (accessToken, refreshToken) => {
+        setLocalStorage("refreshToken", refreshToken);
         setLocalStorage("access_token", accessToken);
     
         set((_state) => {
             return {
                 accessToken: accessToken,
-                // refreshToken: refreshToken,
+                refreshToken: refreshToken,
             };
         });
     },
@@ -91,7 +75,7 @@ export const useUserStore = create<_typeInterface_>((set) => ({
     
         set((_state) => {
             return {
-                userData: user,
+                userData: user || defaultUserEmpty,
                 isLoggedIn: true,
             };
         });
@@ -109,9 +93,13 @@ export const useUserStore = create<_typeInterface_>((set) => ({
     _logOutUser: () => {
         removeLocalStorageItem("user");
         removeLocalStorageItem("access_token");
-        // removeLocalStorageItem("refreshToken");
-    
-        set((_state) => {
+        removeLocalStorageItem("refreshToken");
+
+        const { logOutBackendFn } = useCheckAuth();
+        
+        set((state) => {
+            logOutBackendFn(state.accessToken);
+
             return {
                 userData: defaultUserEmpty,
                 isLoggedIn: false,
@@ -124,13 +112,13 @@ export const useUserStore = create<_typeInterface_>((set) => ({
     _handleRestoreUser: () => {
         const user = getLocalStorage("user");
         const accessToken = getLocalStorage("access_token");
-        // const refreshToken = getLocalStorage("refreshToken");
+        const refreshToken = getLocalStorage("refreshToken");
 
         set((state) => {
             return {
                 userData: user || state.userData,
                 accessToken: accessToken || state.accessToken,
-                // refreshToken: refreshToken || state.refreshToken
+                refreshToken: refreshToken || state.refreshToken
             }
         });
     },
@@ -146,4 +134,3 @@ export const useUserStore = create<_typeInterface_>((set) => ({
     },
     _verifyUser: () => {},
 }));
-  

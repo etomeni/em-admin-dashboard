@@ -1,4 +1,4 @@
-import logo from "@/assets/images/notFound.png";
+import logo from "@/assets/images/Logo.png";
 
 export default function LoadingComponent() {
 

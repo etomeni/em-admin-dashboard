@@ -41,8 +41,8 @@ export function useForgotPasswordAuth() {
         });
 
         try {
-            const response = (await axios.post(`${apiEndpoint}/auth/sendPasswordResetEmail`, formData )).data;
-            // console.log(response);
+            const response = (await axios.post(`${apiEndpoint}/admin/auth/otp`, formData )).data;
+            console.log(response);
             
             setApiResponse({
                 display: true,
@@ -57,7 +57,8 @@ export function useForgotPasswordAuth() {
 
             const resData = {
                 email: formData.email,
-                token: response.token
+                id: response.data.id,
+                // token: response.token
             }
 
             navigate({

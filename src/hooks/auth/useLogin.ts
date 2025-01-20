@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
@@ -8,10 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useUserStore } from "@/state/userStore";
 import { apiEndpoint, passwordRegex } from "@/util/resources";
-import { getDecryptedLocalStorage, setEncryptedLocalStorage } from "@/util/storage";
+import { setEncryptedLocalStorage } from "@/util/storage";
 import { useSettingStore } from "@/state/settingStore";
-import { defaultUserLocation, getUserLocation } from "@/util/location";
-import { locationInterface } from "@/typeInterfaces/users.interface";
 
 
 const formSchema = yup.object({
@@ -42,24 +40,10 @@ export function useLoginAuth() {
     
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
-    const [userLocation, setUserLocation] = useState<locationInterface>(defaultUserLocation);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    useEffect(() => {
-        const result = getDecryptedLocalStorage('uad');
-        if (result) {
-            setValue("email", result.email || '', {shouldDirty: true, shouldTouch: true, shouldValidate: true});
-            setValue("password", result.password || '', {shouldDirty: true, shouldTouch: true, shouldValidate: true});
-        }
-
-        getUserLocation().then((res) => {
-            // console.log(res);
-            if (res) setUserLocation(res);
-        });
-    }, []);
-    
     const { 
-        handleSubmit, register, setValue, formState: { errors, isValid, isSubmitting } 
+        handleSubmit, register, formState: { errors, isValid, isSubmitting } 
     } = useForm({ resolver: yupResolver(formSchema), mode: 'onBlur', reValidateMode: 'onChange' });
         
     const _onSubmit = async (formData: typeof formSchema.__outputType) => {
@@ -72,13 +56,12 @@ export function useLoginAuth() {
 
         try {
             const loginData = {
-                location: userLocation,
                 email: formData.email,
                 password: formData.password
             };
-            const response = (await axios.post(`${apiEndpoint}/auth/admin/login`, loginData )).data;
+            const response = (await axios.post(`${apiEndpoint}/admin/auth/signin`, loginData )).data;
 
-            if (response.status) {
+            // if (response.statusCode) {
                 setApiResponse({
                     display: true,
                     status: true,
@@ -93,38 +76,27 @@ export function useLoginAuth() {
                 // uad - user auth data;
                 if (rememberMe) setEncryptedLocalStorage('uad', formData);
 
-                // if (response.role == 'user' ) {
-                //     _signUpUser(response.result);
-                    
-                //     navigate("/auth/signup-type");
-                //     return;
-                // }
 
-                _loginUser(response.result, response.token);
+                _loginUser(response.user, response.access_token, response.refresh_token);
 
                 navigate("/admin/", {replace: true});
                 return;
-            }
+            // }
 
-            setApiResponse({
-                display: true,
-                status: false,
-                message: response.message || "Oooops, login failed. please try again."
-            });
         } catch (error: any) {
-            const err = error.response.data || error;
+            const err = error.response && error.response.data ? error.response.data : error;
             const fixedErrorMsg = "Oooops, login failed. please try again.";
 
             setApiResponse({
                 display: true,
                 status: false,
-                message: err.errors && err.errors.length ? err.errors[0].msg : err.message || fixedErrorMsg
+                message: err.message || fixedErrorMsg
             });
 
             _setToastNotification({
                 display: true,
                 status: "error",
-                message: err.errors && err.errors.length ? err.errors[0].msg : err.message || fixedErrorMsg
+                message: err.message || fixedErrorMsg
             });
         }
     }

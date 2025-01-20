@@ -1,10 +1,3 @@
-
-type securityQuestionsInterface = {
-    question: string,
-    answer: string
-};
-
-
 export type locationInterface = {
     ip: string,
     usedIps: string[],
@@ -16,45 +9,31 @@ export type locationInterface = {
     lon: number,
 };
 
+// export type authUserInterface = {
+//     id: string,
+//     first_name: string,
+//     last_name: string,
+//     tier: string,
+//     UserTraits: {
+//         date_of_birth: string,
+//         gender: string,
+//         verified: boolean,
+//     },
+// };
+
+
 export type userInterface = {
-    _id: string;
-    role: 'user' | 'admin',
-    userType: 'artist' | 'record label',
-    balance: number,
+    id: string;
+    role_id: string,
+    
     email: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    country: string,
-    gender?: string;
-
-    artistName?: string;
-    recordLabelName?: string;
-    recordLabelLogo?: string;
-
-    kyc: {
-        isKycSubmitted: boolean,
-        phoneNumber: string,
-        securityQuestions: securityQuestionsInterface[]
-    }
-
-    password: string;
-    status: boolean;
-    // lastUsedIp: string;
-
-    location: locationInterface,
-
-    createdAt: string;
-    updatedAt: string;
-};
-
-
-export type userLocationInterface = {
-    ip: string,
-    city: string,
-    region: string,
-    country: string,
-    isp: string,
-    lat: number,
-    lon: number,
+    first_name: string;
+    last_name: string;
+    email_verified: boolean,
+    is_suspended: boolean,
+    idempotency_key: string;
+    
+    last_login: string,
+    created_at: string;
+    updated_at: string;
 };

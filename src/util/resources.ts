@@ -1,7 +1,8 @@
 // import kolors from "@/constants/kolors";
 
-const baseUrl = "http://localhost:3000";
-export const apiEndpoint = `${baseUrl}/api/v1`;
+// const baseUrl = "http://localhost:3000";
+// export const apiEndpoint = `${baseUrl}/api/v1`;
+export const apiEndpoint = `https://api-admin.bondyt.com`;
 
 export const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~!@#$^&*()_\-+={}[\]\\|"'`;<>,.?/]).{6,}$/;
 
