@@ -8,14 +8,13 @@ import Typography from '@mui/material/Typography';
 import NotificationComponent from '@/components/sunday/NotificationComponent';
 import { themeBtnStyle } from '@/util/mui';
 import mtnLogo from "@/assets/images/mtn2.png";
-import IconButton from '@mui/material/IconButton';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import BackNavigationArrowBtn from '@/components/sunday/BackNavigationArrowBtn';
 
 
 
 const AdReviewDetailsPage = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     return (
         <Box mb={5}
@@ -30,9 +29,7 @@ const AdReviewDetailsPage = () => {
             <Stack direction='row' gap='10px' flexWrap="wrap"
                 alignItems="center" justifyContent="space-between"
             >
-                <IconButton size='small' onClick={() => navigate(-1)}>
-                    <NavigateBeforeIcon sx={{ fontSize: "24px" }} />
-                </IconButton>
+                <BackNavigationArrowBtn />
 
                 <NotificationComponent />
             </Stack>

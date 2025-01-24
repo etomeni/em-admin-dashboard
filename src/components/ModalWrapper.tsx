@@ -37,7 +37,7 @@ const ModalWrapper: React.FC<_Props> = ({
                     sx={{
                         bgcolor: colors.bg,
                         width: "100%",
-                        maxWidth: {xs: "92%", sm: "496px"},
+                        maxWidth: {xs: "92%", sm: "496px", md: "600px"},
                         // maxHeight: "605px",
                         maxHeight: "95%",
                         borderRadius: "12px",

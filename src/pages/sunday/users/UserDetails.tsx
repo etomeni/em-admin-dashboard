@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { Outlet, Navigate } from 'react-router-dom';
 // import { useUserStore } from '@/state/userStore';
 import Box from '@mui/material/Box';
@@ -22,7 +23,6 @@ import ProfileInformationComponent from '@/components/sunday/users/ProfileInform
 import ReceivedStickersGiftsComponent from '@/components/sunday/users/ReceivedStickersGifts';
 import { TravelLocationModal } from '@/components/sunday/users/TravelLocationModal';
 import NotificationComponent from '@/components/sunday/NotificationComponent';
-import { useNavigate } from 'react-router-dom';
 
 
 const travelLocationsData = [

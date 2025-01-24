@@ -98,7 +98,7 @@ const LiveAdDetailsPage = () => {
                         >Inprofile ads</Typography>
                     </Box>
 
-                    <Box    
+                    <Box
                         sx={{
                             // flexBasis: {sm: "13%", md: "18%"},
                             width: "fit-content"
@@ -106,7 +106,9 @@ const LiveAdDetailsPage = () => {
                     >
                         <Button variant="contained" size='small'
                             type="button"
-                            onClick={() => { }}
+                            onClick={() => {
+                                navigate("/admin/ad-manager/edit/12345678")
+                            }}
                             
                             sx={{
                                 ...themeBtnStyle,

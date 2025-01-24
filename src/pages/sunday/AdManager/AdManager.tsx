@@ -89,7 +89,9 @@ const AdManagerPage = () => {
                 >
                     <Button variant="contained" size='small'
                         type="button"
-                        onClick={() => { }}
+                        onClick={() => { 
+                            navigate("/admin/ad-manager/edit/new")
+                        }}
                         
                         sx={{
                             ...themeBtnStyle,

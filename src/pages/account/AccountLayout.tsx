@@ -23,12 +23,12 @@ const AccountLayout = () => {
     useEffect(() => {
         if (pathname.includes("admin/users")) setValue(2);
         if (pathname.includes("admin/products")) setValue(3);
-        // if (pathname.includes("admin/analytics")) setValue(4);
-        // if (pathname.includes("admin/promotions")) setValue(5);
+        if (pathname.includes("admin/store")) setValue(4);
+        if (pathname.includes("admin/marketing")) setValue(5);
         if (pathname.includes("admin/ad-manager")) setValue(6);
         // if (pathname.includes("admin/coupon")) setValue(7);
         // if (pathname.includes("admin/contacts")) setValue(8);
-        // if (pathname.includes("admin/newsletter")) setValue(9);
+        if (pathname.includes("admin/merchant")) setValue(9);
     }, [pathname]);
 
 
@@ -49,9 +49,24 @@ const AccountLayout = () => {
             baseLink: "/admin/products"
         },
         {
+            title: 'Store',
+            status: value == 4 ? true : false,
+            baseLink: "/admin/store"
+        },
+        {
+            title: 'Marketing',
+            status: value == 5 ? true : false,
+            baseLink: "/admin/marketing"
+        },
+        {
             title: 'Ad Manager',
             status: value == 6 ? true : false,
             baseLink: "/admin/ad-manager"
+        },
+        {
+            title: 'Merchant',
+            status: value == 9 ? true : false,
+            baseLink: "/admin/merchant"
         },
     ];
 

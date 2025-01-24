@@ -1,4 +1,5 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import kolors from '@/constants/kolors';
@@ -6,71 +7,92 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
 
 import NotificationComponent from '@/components/sunday/NotificationComponent';
-import { themeBtnStyle } from '@/util/mui'; 
 // import mtnLogo from "@/assets/images/mtn2.png";
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { useState } from 'react';
-import { convertToBase64 } from '@/util/resources';
-import TextField from '@mui/material/TextField';
-import Slider from '@mui/material/Slider';
-import Autocomplete from '@mui/material/Autocomplete';
+import NewEditBannerAdsComponent from '@/components/sunday/AdManager/NewEditBannerAds';
+import NewEditInprofileAdsComponent from '@/components/sunday/AdManager/NewEditInprofileAds';
 
 
-const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 },
-    {
-      label: 'The Lord of the Rings: The Return of the King',
-      year: 2003,
-    },
-    { label: 'The Good, the Bad and the Ugly', year: 1966 },
-    { label: 'Fight Club', year: 1999 },
-    {
-      label: 'The Lord of the Rings: The Fellowship of the Ring',
-      year: 2001,
-    },
-];
+// const top100Films = [
+//     { label: 'The Shawshank Redemption', year: 1994 },
+//     { label: 'The Godfather', year: 1972 },
+//     { label: 'The Godfather: Part II', year: 1974 },
+//     { label: 'The Dark Knight', year: 2008 },
+//     { label: '12 Angry Men', year: 1957 },
+//     { label: "Schindler's List", year: 1993 },
+//     { label: 'Pulp Fiction', year: 1994 },
+//     {
+//       label: 'The Lord of the Rings: The Return of the King',
+//       year: 2003,
+//     },
+//     { label: 'The Good, the Bad and the Ugly', year: 1966 },
+//     { label: 'Fight Club', year: 1999 },
+//     {
+//       label: 'The Lord of the Rings: The Fellowship of the Ring',
+//       year: 2001,
+//     },
+// ];
 
+function toggleStringInArray(array: string[], newValue: string) {
+    // Find the index of the string in the array
+    const index = array.indexOf(newValue);
+    
+    if (index === -1) {
+      // If the string does not exist, add it
+      array.push(newValue);
+    } else {
+      // If the string exists, remove it
+      array.splice(index, 1);
+    }
+  
+    return array;
+}
 
+const bannerAdsValue = ["Places", "Books", "Events"];
 
 const NewEditAdDetailsPage = () => {
     const navigate = useNavigate();
-    const {_id} = useParams();
+    // const {_id} = useParams();
 
-    const [value, setValue] = useState<number>(30);
+    const [selectedPlacement, setSelectedPlacement] = useState("Placement");
+    const [bannerAdsLocation, setBannerAdsLocation] = useState<string[]>([]);
+    // const [value, setValue] = useState<number>(30);
 
-    const handleChange = (_event: Event, newValue: number | number[]) => {
-        setValue(newValue as number);
+    // const handleChange = (_event: Event, newValue: number | number[]) => {
+    //     setValue(newValue as number);
 
-        console.log(_id);
+    //     console.log(_id);
         
-    };
+    // };
   
 
+    const [placementAnchorEl, setPlacementAnchorEl] = useState<null | HTMLElement>(null);
+    const openPlacementMenu = Boolean(placementAnchorEl);
+    const handleClickPlacement = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setPlacementAnchorEl(event.currentTarget);
+    };
+    const handleClosePlacement = () => {
+        setPlacementAnchorEl(null);
+    };
 
-    const [iconInputValue, setIconInputValue] = useState('');
-    // const [inputIconImage, setInputIconImage] = useState<any>();
+    // const [iconInputValue, setIconInputValue] = useState('');
+    // // const [inputIconImage, setInputIconImage] = useState<any>();
 
 
-    const handleFileUpload = async (e: any) => {
-        const file = e.target.files[0]; 
-        // setInputIconImage(file);
+    // const handleFileUpload = async (e: any) => {
+    //     const file = e.target.files[0]; 
+    //     // setInputIconImage(file);
 
-        const base64 = await convertToBase64(file);
-        console.log(base64.result);
-        setIconInputValue(base64.result);
+    //     const base64 = await convertToBase64(file);
+    //     console.log(base64.result);
+    //     setIconInputValue(base64.result);
     
-        e.target.value = "";
-    }
+    //     e.target.value = "";
+    // }
 
 
     
@@ -96,266 +118,116 @@ const NewEditAdDetailsPage = () => {
 
             <Box mt={5}>
 
-                <Select
-                    // value={0}
-                    defaultValue={0}
-                    // onChange={handleChange}
-                    size='small'
+                <Box>
+                    <Button
+                        id="placement-button"
+                        aria-controls={openPlacementMenu ? 'placement-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openPlacementMenu ? 'true' : undefined}
+                        onClick={handleClickPlacement}
+                    > { selectedPlacement } </Button>
 
-                    sx={{
-                        color: kolors.primary,
-                        borderRadius: "8px",
-                        bgcolor: kolors.secondary,
-                        // border: "none",
-                        // borderColor: kolors.border,
-                        textAlign: "start",
-                        // my: 2,
-                        p: "1px",
-
-                        // '& .MuiSelect-select': {
-                        //     paddingRight: "0px",
-                        //     paddingLeft: "10px",
-                        //     paddingTop: "1px",
-                        //     paddingBottom: "1px",
-                        // },
-                        
-                        // '.MuiOutlinedInput-notchedOutline': {
-                        //     borderColor: kolors.border,
-                        //     // border: "none",
-                        // },
-                        // '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        //     borderColor: kolors.border, // 'rgba(228, 219, 233, 0.25)',
-                        //     // border: "none",
-                        // },
-                        // '&:hover .MuiOutlinedInput-notchedOutline': {
-                        //     borderColor: 'var(--TextField-brandBorderHoverColor)',
-                        //     // border: "none",
-                        // },
-                        '.MuiSvgIcon-root ': {
-                            fill: kolors.dark,
-                        }
-                    }}
-                >
-                    <MenuItem value={0} disabled>Placement</MenuItem>
-                    <MenuItem value={10} disabled>Banner ads</MenuItem>
-                    <MenuItem value={20}>Places</MenuItem>
-                    <MenuItem value={30}>Books</MenuItem>
-                    <MenuItem value={40}>Events</MenuItem>
-
-                    <MenuItem value={1} disabled>Inprofile  Ads</MenuItem>
-
-                    <MenuItem value={50}>Inprofile  Ads</MenuItem>
-                </Select>
-
-                <Box maxWidth="520px" mx="auto">
-
-                    <Box
-                        sx={{
-                            width: "180px",
-                            height: "260px",
-                            border: `1px solid ${kolors.border}`,
-                            borderRadius: "8px",
-                            bgcolor: "#EFEFEF66", // "0A000066"
-                            textAlign: "center",
-                            mx: "auto",
-                            my: 2, // py: 1,
-                            overflow: "hidden",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                            // position: "relative",
-                        }}
-                        onClick={() => {
-                            document.getElementById("stickerImage")?.click();
+                    <Menu
+                        id="placement-menu"
+                        anchorEl={placementAnchorEl}
+                        open={openPlacementMenu}
+                        onClose={handleClosePlacement}
+                        MenuListProps={{
+                            'aria-labelledby': 'placement-button',
                         }}
                     >
-                        {
-                            iconInputValue ? 
-                                <img 
-                                    src={iconInputValue} alt='stickers image'
-                                    style={{
-                                        width: "100%", // "100%",
-                                        height: "100%",
-                                        // maxWidth: "100px",
-                                        // maxHeight: "100px",
-                                        // borderRadius: "8px",
-                                        // marginTop: "15px",
-                                        margin: "auto",
-                                        objectFit: "contain",
+                        <MenuItem>
+                            <Box>
+                                <Stack direction="row" spacing="20px" 
+                                    alignItems="center" justifyContent="space-between"
+                                    onClick={() => {
+                                        setSelectedPlacement("Banner ads")
+                                        setBannerAdsLocation(bannerAdsValue);
+                                        setPlacementAnchorEl(null);
                                     }}
-                                />
-                            :
-                            <IconButton size='small' sx={{ my: "auto" }}>
-                                <CloudUploadOutlinedIcon 
-                                    sx={{ 
-                                        color: kolors.border, 
-                                        fontSize: "70px",
-                                    }} 
-                                />
-                            </IconButton>
-                        }
-                    </Box>
+                                >
+                                    <Typography>Banner ads</Typography>
 
+                                    <Checkbox 
+                                        checked={selectedPlacement == "Banner ads" ? true : false}
+                                        sx={{
+                                            color: "#D9D9D9",
+                                            '&.Mui-checked': {
+                                                color: kolors.primary,
+                                            },
+                                        }}
+                                    />
+                                </Stack>
+                                
+                                <Box>
+                                    { 
+                                        bannerAdsValue.map((item, index) => (
+                                            <MenuItem key={index} component="div">
+                                                <Stack direction="row" spacing="20px" 
+                                                    alignItems="center" justifyContent="space-between"
+                                                    onClick={() => { 
+                                                        const newLocations = toggleStringInArray(bannerAdsLocation, item);
+                                                        setBannerAdsLocation(newLocations);
+                                                        setSelectedPlacement("Banner ads")
+                                                        setPlacementAnchorEl(null);
+                                                    }}
+                                                >
+                                                    <Typography>{item}</Typography>
 
+                                                    <Checkbox 
+                                                        checked={bannerAdsLocation.includes(item) ? true : false}
+                                                        size='small'
+                                                        sx={{
+                                                            color: "#D9D9D9",
+                                                            '&.Mui-checked': {
+                                                                color: kolors.primary,
+                                                            },
+                                                        }}
+                                                    />
+                                                </Stack>
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Box>
+                            </Box>
+                        </MenuItem>
 
-                    <Box sx={{ py: 2 }}>
-                        <Typography variant='body1' sx={{
-                            fontWeight: "600",
-                            fontSize: "16px",
-                            color: kolors.dark,
-                        }}> AD title </Typography>
-
-                        <TextField 
-                            variant="outlined" 
-                            fullWidth 
-                            type='text'
-                            inputMode='text'
-                            defaultValue=""
-                            
-                            // sx={{
-                            //     ...authMuiTextFieldStyle
-                            // }}
-                            // error={ errors.email ? true : false }
-                            // { ...register('email') }
-                        />
-                        {/* { errors.email && <Box sx={{fontSize: 13, color: "red", textAlign: "left"}}>{ errors.email?.message }</Box> } */}
-
-                    </Box>
-
-                    <Box sx={{ py: 2 }}>
-                        <Typography variant='body1' sx={{
-                            fontWeight: "600",
-                            fontSize: "16px",
-                            color: kolors.dark,
-                        }}> AD Link </Typography>
-
-                        <TextField 
-                            variant="outlined" 
-                            fullWidth 
-                            type='text'
-                            inputMode='text'
-                            defaultValue=""
-                            
-                            // sx={{
-                            //     ...authMuiTextFieldStyle
-                            // }}
-                            // error={ errors.email ? true : false }
-                            // { ...register('email') }
-                        />
-                        {/* { errors.email && <Box sx={{fontSize: 13, color: "red", textAlign: "left"}}>{ errors.email?.message }</Box> } */}
-
-                    </Box>
-
-                    <Box sx={{ py: 2 }}>
-                        <Typography variant='body1' sx={{
-                            fontWeight: "600",
-                            fontSize: "16px",
-                            color: kolors.dark,
-                        }}> Location </Typography>
-
-
-                        <Autocomplete
-                            disablePortal
-                            options={top100Films}
-                            // sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="" />}
-                        />
-                    </Box>
-
-                    <Box sx={{ py: 2 }}>
-                        <Typography variant='body1' sx={{
-                            fontWeight: "600",
-                            fontSize: "16px",
-                            color: kolors.dark,
-                        }}> AD description </Typography>
-
-                        <TextField 
-                            variant="outlined" 
-                            fullWidth 
-                            type='text'
-                            inputMode='text'
-                            defaultValue=""
-                            multiline
-                            rows={4}
-                            
-                            // sx={{
-                            //     ...authMuiTextFieldStyle
-                            // }}
-                            // error={ errors.email ? true : false }
-                            // { ...register('email') }
-                        />
-                        {/* { errors.email && <Box sx={{fontSize: 13, color: "red", textAlign: "left"}}>{ errors.email?.message }</Box> } */}
-
-                    </Box>
-
-                    <Box sx={{ py: 2 }}>
-                        <Typography variant='body1' sx={{
-                            fontWeight: "600",
-                            fontSize: "16px",
-                            color: kolors.dark,
-                        }}> Set an Duration </Typography>
-
-                        <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
-                            <Slider aria-label="Volume" 
-                                color='secondary'
-                                value={value} 
-                                onChange={handleChange} 
-                            />
-                            
-                            <Box
-                                sx={{
-                                    borderRadius: "8px",
-                                    border: `1px solid ${kolors.border}`,
-                                    p: 1
+                        <MenuItem>
+                            <Stack direction="row" spacing="20px" 
+                                alignItems="center" justifyContent="space-between"
+                                onClick={() => {
+                                    setSelectedPlacement("Inprofile Ads")
+                                    setBannerAdsLocation([]);
+                                    setPlacementAnchorEl(null);
                                 }}
                             >
-                                <Typography
+                                <Typography>Inprofile Ads</Typography>
+
+                                <Checkbox 
+                                    checked={selectedPlacement == "Inprofile Ads" ? true : false}
                                     sx={{
-                                        fontWeight: "400",
-                                        fontSize: "13px",
-                                        color: kolors.border,
+                                        color: "#D9D9D9",
+                                        '&.Mui-checked': {
+                                            color: kolors.primary,
+                                        },
                                     }}
-                                >Days</Typography>
-
-                                <Typography
-                                    sx={{
-                                        fontWeight: "600",
-                                        fontSize: "22px",
-                                        color: kolors.primary,
-                                    }}
-                                >10</Typography>
-                            </Box>
-                        </Stack>
-                    </Box>
-
-
-                    <Button variant="contained" size='small'
-                        fullWidth
-                        type="button"
-                        onClick={() => { }}
-                        
-                        sx={{
-                            ...themeBtnStyle,
-                            fontSize: "16px",
-                            fontWeight: "400",
-                            // lineHeight: 14.52px;
-                        }}
-                    >Publish</Button>
-
-
-
+                                />
+                            </Stack>
+                        </MenuItem>
+                    </Menu>
                 </Box>
 
+
+                <Box maxWidth="520px" mx="auto">
+                    {
+                        selectedPlacement == "Inprofile Ads" ?
+                            <NewEditInprofileAdsComponent />
+                        :
+                            <NewEditBannerAdsComponent />
+                    }
+
+                </Box>
             </Box>
-            
-            <input 
-                type="file" 
-                id='stickerImage' 
-                name="stickerImage" 
-                accept='image/*' 
-                onChange={handleFileUpload}
-                style={{display: "none"}}
-            />
         </Box>
     );
 };

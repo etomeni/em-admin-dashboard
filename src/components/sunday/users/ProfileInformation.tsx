@@ -337,18 +337,29 @@ const AddNewInfoComponent: React.FC<AddNewInfo_Props> = ({
                         popper: {
                             disablePortal: true,
                         },
-                    }}
-                    componentsProps={{
                         tooltip: {
-                          sx: {
-                            bgcolor: kolors.bg,
-                            boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
-                            '& .MuiTooltip-arrow': {
-                              color: '#c4c4c4',
+                            sx: {
+                                // backgroundColor: "#fff",
+                                bgcolor: kolors.bg,
+                                boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+                                '& .MuiTooltip-arrow': {
+                                    color: '#c4c4c4',
+                                },
                             },
-                          },
                         },
-                      }}
+                    }}
+
+                    // componentsProps={{
+                    //     tooltip: {
+                    //       sx: {
+                    //         bgcolor: kolors.bg,
+                    //         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+                    //         '& .MuiTooltip-arrow': {
+                    //           color: '#c4c4c4',
+                    //         },
+                    //       },
+                    //     },
+                    // }}
                 >
                     <Chip label="Add +" size='small'
                         clickable

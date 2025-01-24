@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 // import { useUserStore } from '@/state/userStore';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -9,18 +9,16 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import TableContainer from '@mui/material/TableContainer';
-import IconButton from '@mui/material/IconButton';
-// import Typography from '@mui/material/Typography';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 import NotificationComponent from '@/components/sunday/NotificationComponent';
 import SearchwordComponent from '@/components/sunday/SearchwordComponent';
 import Chip from '@mui/material/Chip';
+import BackNavigationArrowBtn from '@/components/sunday/BackNavigationArrowBtn';
 
 
 
 const UserTransactionHistoryPage = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     
     const handleSearch = (searchword: string) => {
         console.log(searchword);
@@ -51,9 +49,7 @@ const UserTransactionHistoryPage = () => {
             <Stack direction='row' spacing='10px' mt={3}
                 alignItems="center" justifyContent="space-between"
             >
-                <IconButton size='small' onClick={() => navigate(-1)}>
-                    <ArrowBackIosIcon sx={{ fontSize: "18px", color: kolors.border }} />
-                </IconButton>
+                <BackNavigationArrowBtn />
 
                 <Box></Box>
             </Stack>
