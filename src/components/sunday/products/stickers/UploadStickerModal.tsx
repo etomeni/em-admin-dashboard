@@ -14,6 +14,7 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import kolors from '@/constants/kolors';
 import { themeBtnStyle } from '@/util/mui';
 import { convertToBase64 } from '@/util/resources';
+import { useStickersHook } from '@/hooks/products/useStickersHook';
 
 
 interface _Props {
@@ -29,11 +30,11 @@ export const UploadStickerModal: React.FC<_Props> = ({
     const [iconInputValue, setIconInputValue] = useState('');
     const [inputIconImage, setInputIconImage] = useState<any>();
 
-    const [apiResponse, setApiResponse] = useState({
-        display: false,
-        status: true,
-        message: ""
-    });
+    const {
+        apiResponse, setApiResponse,
+        // getStickerById,
+        addNewSticker,
+    } = useStickersHook();
     
     const handleFileUpload = async (e: any) => {
         const file = e.target.files[0]; 
@@ -47,6 +48,12 @@ export const UploadStickerModal: React.FC<_Props> = ({
     }
 
     const handleSubmit = () => {
+        setApiResponse({
+            display: false,
+            status: false,
+            message: ""
+        });
+
         if (!priceInputValue) {
             setApiResponse({
                 display: true,
@@ -74,6 +81,11 @@ export const UploadStickerModal: React.FC<_Props> = ({
             return;
         }
 
+        addNewSticker(
+            nameInputValue, Number(priceInputValue), 
+            iconInputValue, 
+            () => {}
+        );
     }
     
 

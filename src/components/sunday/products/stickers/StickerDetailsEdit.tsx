@@ -11,19 +11,21 @@ import { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 // import pinkDiamondIcon from "@/assets/images/stickers/pinkDiamondIcon.png";
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import { stickerInterface } from '@/typeInterfaces/stickers.interface';
 
 
 interface _Props {
-    selectedSticker: {
-        id: string;
-        name: string;
-        icon: string;
-        price: string;
-        purchase: string;
-    },
+    // selectedSticker: {
+    //     id: string;
+    //     name: string;
+    //     icon: string;
+    //     price: string;
+    //     purchase: string;
+    // },
+    selectedSticker: stickerInterface,
 
-    deleteStickerBtn: (sticker: any) => void
-    saveStickerBtn: (oldSticker: any, newSticker: any) => void
+    deleteStickerBtn: (sticker: stickerInterface) => void
+    saveStickerBtn: (oldSticker: stickerInterface, newSticker: any) => void
 };
 
 const StickerDetailsEditComponent: React.FC<_Props> = ({
@@ -37,7 +39,7 @@ const StickerDetailsEditComponent: React.FC<_Props> = ({
     useEffect(() => {
         setPriceInputValue(selectedSticker.price);
         setNameInputValue(selectedSticker.name);
-        setIconInputValue(selectedSticker.icon);
+        setIconInputValue(selectedSticker.url);
 
         setInputIconImage(undefined);
     }, [selectedSticker])
@@ -78,6 +80,7 @@ const StickerDetailsEditComponent: React.FC<_Props> = ({
                             icon: iconInputValue,
                             price: priceInputValue,
                             image: inputIconImage,
+                            imagePreview: iconInputValue
                         }
                     )}
                         

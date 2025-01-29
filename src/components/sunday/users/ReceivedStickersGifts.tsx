@@ -9,20 +9,16 @@ import pinkDiamond from "@/assets/images/stickers/pinkDiamondIcon.png";
 import gamer from "@/assets/images/stickers/gamerIcon.png";
 import oxygen from "@/assets/images/stickers/oxygenIcon.png";
 import iphone13 from "@/assets/images/gifts/iphone13.jpeg";
+import { usersDetailsInterface } from '@/typeInterfaces/users.interface';
 
 
 interface _Props {
-    // menuItems: {
-    //     title: string;
-    //     status: boolean;
-    //     baseLink: string;
-    // }[],
-    // value: number, 
+    userData?: usersDetailsInterface, 
     // setValue: (data: number) => void
 };
 
 const ReceivedStickersGiftsComponent: React.FC<_Props> = ({
-    // menuItems, value, setValue
+    // userData,
 }) => {
     // const navigate = useNavigate();
 
@@ -55,7 +51,56 @@ const ReceivedStickersGiftsComponent: React.FC<_Props> = ({
                 <Stack direction="row" gap="10px" my={2}
                     alignItems="center" flexWrap="wrap"
                 >
-                    <Box 
+                    {/* {
+                        userData.receivedStickers.map((item) => (
+                            <Box key={item.id}
+                                sx={{
+                                    width: "80px",
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        fontWeight: "600",
+                                        fontSize: "13px",
+                                        color: kolors.primary,
+                                        top: 0,
+                                        right: 0,
+                                        textAlign: "right"
+                                    }}
+                                >{item.quantity}x</Typography>
+
+                                <Box>
+                                    <img 
+                                        src={ item.sticker || pinkDiamond} 
+                                        alt="Received Stickers" 
+                                        style={{ width: "80%", objectFit: "contain" }} 
+                                    />
+                                </Box>
+
+                                <Box textAlign="center">
+                                    <Typography
+                                        sx={{
+                                            fontWeight: "600",
+                                            fontSize: "13px",
+                                            color: kolors.border,
+                                            lineHeight: "14.52px"
+                                        }}
+                                    >Pink diamond</Typography>
+
+                                    <Typography
+                                        sx={{
+                                            fontWeight: "600",
+                                            fontSize: "13px",
+                                            color: kolors.border,
+                                        }}
+                                    >$10</Typography>
+                                </Box>
+                                
+                            </Box>
+                        ))
+                    } */}
+
+                    <Box
                         sx={{
                             width: "80px",
                         }}
@@ -73,7 +118,7 @@ const ReceivedStickersGiftsComponent: React.FC<_Props> = ({
 
                         <Box>
                             <img 
-                                src={pinkDiamond} 
+                                src={ pinkDiamond} 
                                 alt="Received Stickers" 
                                 style={{ width: "80%", objectFit: "contain" }} 
                             />
@@ -97,8 +142,9 @@ const ReceivedStickersGiftsComponent: React.FC<_Props> = ({
                                 }}
                             >$10</Typography>
                         </Box>
-                         
+                        
                     </Box>
+
 
                     <Box 
                         sx={{

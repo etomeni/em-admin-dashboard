@@ -36,6 +36,8 @@ import EventsRequestPage from "./pages/sunday/merchant/events/EventsRequest";
 import MerchantSecurityDetailsPage from "./pages/sunday/merchant/security/MerchantSecurityDetails";
 import BooksRequestPage from "./pages/sunday/merchant/books/BooksRequest";
 import MerchantBooksDetailsPage from "./pages/sunday/merchant/books/MerchantBooksDetails";
+import PushNotificationAddEditPage from "./pages/sunday/marketing/PushNotificationAddEdit";
+import PaymentsPage from "./pages/sunday/payment/Payments";
 
 
 
@@ -166,6 +168,10 @@ export const router = createBrowserRouter([
                   path: "",
                   element: <MarketingPage />
                 },
+                {
+                  path: "push-notification-add-edit",
+                  element: <PushNotificationAddEditPage />
+                },
               ]
             },
             {
@@ -232,6 +238,16 @@ export const router = createBrowserRouter([
                 {
                   path: "merchant-books-details",
                   element: <MerchantBooksDetailsPage />
+                },
+              ]
+            },
+            {
+              path: "payment",
+              // element: <AccountLayout />,
+              children: [
+                {
+                  path: "",
+                  element: <PaymentsPage />
                 },
               ]
             },
