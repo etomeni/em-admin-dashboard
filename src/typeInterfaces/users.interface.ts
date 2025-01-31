@@ -65,10 +65,24 @@ export type userReceivedStickersInterface = {
     sticker_id: string,
     quantity: number,
     status: string;
-    sticker: any
+    sticker: {
+        name: string;
+        url: string;
+        price: number
+    }
 }
 
+export type userReceivedGiftsInterface = {
+    id: string;
+    product: {
+        id: string;
+        name: string;
+    }
+}
+
+
 export type usersDetailsInterface = {
+    email: string;
     first_name: string;
     tier: string;
     last_login: string;
@@ -77,7 +91,7 @@ export type usersDetailsInterface = {
         gender: string,
         verified: boolean,
         hobbies: string[],
-        joining_purpose: string
+        joining_purpose: string[]
     },
     userProfile: {
         bio: string,
@@ -85,6 +99,12 @@ export type usersDetailsInterface = {
     },
     profilePhoto: {
         url: string;
+    },
+    userPreference: {
+        ideal_partner_qualities: [
+            "Ambition",
+            "Loyalty"
+        ]
     },
     userLocation: {
         latitude: number,
@@ -94,7 +114,7 @@ export type usersDetailsInterface = {
         country: string;
     },
     receivedStickers: userReceivedStickersInterface[],
-    receivedGifts: any[],
+    receivedGifts: userReceivedGiftsInterface[],
     userDyt: {
         id: string;
         balance: number

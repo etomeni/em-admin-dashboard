@@ -6,7 +6,36 @@ import { useSettingStore } from "@/state/settingStore";
 import { usersDetailsInterface, usersListInterface, userTravelLocationInterface } from "@/typeInterfaces/users.interface";
 
 
+
+interface transactionPaymentsInterfcae {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    payer_id: string;
+    target_id: string;
+    target_type: string;
+    transaction_id: string;
+    amount: string;
+    currency: string;
+    status: string;
+    payment_url: string;
+    payment_provider: string;
+}
+interface transactionWithrawalsInterfcae {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    user_id: string;
+    bank_id: string;
+    paypal_id: string;
+    amount: string;
+    method: string;
+    withdrawal_status: string;
+}
+
+
 export function useUsersHook() {
+    const refreshToken = useUserStore((state) => state.refreshToken);
     const accessToken = useUserStore((state) => state.accessToken);
     const _setToastNotification = useSettingStore((state) => state._setToastNotification);
     const [apiResponse, setApiResponse] = useState({
@@ -24,6 +53,9 @@ export function useUsersHook() {
     const [users, setUsers] = useState<usersListInterface[]>();
     const [selectedUserDetails, setSelectedUserDetails] = useState<usersDetailsInterface>();
     const [userTravelLocations, setUserTravelLocations] = useState<userTravelLocationInterface[]>();
+    const [transactionPayments, setTransactionPayments] = useState<transactionPaymentsInterfcae[]>();
+    const [transactionWithrawals, setTransactionWithrawals] = useState<transactionWithrawalsInterfcae[]>();
+    const [dytTransactions, setDytTransactions] = useState<any[]>();
     
 
     const getUsers = useCallback(async (pageNo: number, limitNo: number) => {
@@ -32,14 +64,14 @@ export function useUsersHook() {
         try {
             const response = (await axios.get(`${apiEndpoint}/admin/user/all`, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`
+                    Authorization: `Bearer ${refreshToken}`
                 },
                 params: {
                     page: pageNo,
                     limit: limitNo,
                 }
             })).data;
-            // console.log(response);
+            console.log(response);
 
             if (response.statusCode == 200) {
                 setUsers(response.data);
@@ -300,7 +332,7 @@ export function useUsersHook() {
                     Authorization: `Bearer ${accessToken}`
                 }
             })).data;
-            // console.log(response);
+            console.log(response);
 
             if (response.statusCode == 200) {
                 setSelectedUserDetails(response.data);
@@ -396,6 +428,77 @@ export function useUsersHook() {
         }
     }, []);
 
+    const getUserTransactionHistory = useCallback(async (id: string, pageNo: number, limitNo: number) => {
+        try {
+            const response = (await axios.get(`${apiEndpoint}/admin/user/transaction-history/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+                params: {
+                    page: pageNo,
+                    limit: limitNo,
+                }
+            })).data;
+            console.log(response);
+
+            if (response.statusCode == 200) {
+                setTransactionPayments(response.data.payments);
+                setTransactionWithrawals(response.data.withrawals);
+            }
+    
+            _setToastNotification({
+                display: true,
+                status: "info",
+                message: response.message
+            });
+        } catch (error: any) {
+            const err = error.response && error.response.data ? error.response.data : error;
+            const fixedErrorMsg = "Ooops and error occurred!";
+            console.log(err);
+
+            _setToastNotification({
+                display: true,
+                status: "error",
+                message: err.errors && err.length ? err[0].message : err.message || fixedErrorMsg
+            });
+        }
+    }, []);
+
+    const getUserDytTransactionHistory = useCallback(async (id: string, pageNo: number, limitNo: number) => {
+        try {
+            const response = (await axios.get(`${apiEndpoint}/admin/user/dyt-history/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+                params: {
+                    page: pageNo,
+                    limit: limitNo,
+                }
+            })).data;
+            console.log(response);
+
+            if (response.statusCode == 200) {
+                setDytTransactions(response.data);
+            }
+    
+            _setToastNotification({
+                display: true,
+                status: "info",
+                message: response.message
+            });
+        } catch (error: any) {
+            const err = error.response && error.response.data ? error.response.data : error;
+            const fixedErrorMsg = "Ooops and error occurred!";
+            console.log(err);
+
+            _setToastNotification({
+                display: true,
+                status: "error",
+                message: err.errors && err.length ? err[0].message : err.message || fixedErrorMsg
+            });
+        }
+    }, []);
+
 
     const searchUsers = useCallback(async (searchWord: string, pageNo: number = 1, limitNo: number = 100) => {
         setIsSubmitting(true);
@@ -454,6 +557,9 @@ export function useUsersHook() {
         // singleUsers, albumUsers,
         users, 
         selectedUserDetails,
+        transactionPayments,
+        transactionWithrawals,
+        dytTransactions,
         getUsers,
         getNotVerifiedUsers,
         getFreeUsers,
@@ -463,6 +569,8 @@ export function useUsersHook() {
         userTravelLocations,
         getUserTravelLocations,
         suspendUserById,
+        getUserTransactionHistory,
+        getUserDytTransactionHistory,
         searchUsers,
     }
 }

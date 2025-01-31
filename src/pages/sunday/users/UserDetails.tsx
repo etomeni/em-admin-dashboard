@@ -21,6 +21,7 @@ import { themeBtnStyle } from '@/util/mui';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import TodayIcon from '@mui/icons-material/Today';
 import PlaceIcon from '@mui/icons-material/Place';
+import EmailIcon from '@mui/icons-material/Email';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import TokenBalanceComponent from '@/components/sunday/users/TokenBalance';
 import WalletBalanceComponent from '@/components/sunday/users/WalletBalance';
@@ -31,13 +32,10 @@ import { TravelLocationModal } from '@/components/sunday/users/TravelLocationMod
 import NotificationComponent from '@/components/sunday/NotificationComponent';
 import { useUsersHook } from '@/hooks/users/useUsersHook';
 import LoadingDataComponent from '@/components/LoadingData';
-import { calculateAge } from '@/util/timeNdate';
+import { calculateAge, timeAgo } from '@/util/timeNdate';
 import dayjs from 'dayjs';
-import relativeTime from "dayjs/plugin/relativeTime";
 import { currencyDisplay } from '@/util/resources';
 import CircularProgress from '@mui/material/CircularProgress';
-
-dayjs.extend(relativeTime);
 
 
 const UserDetailsPage = () => {
@@ -264,6 +262,18 @@ const UserDetailsPage = () => {
                                     >Click to see users travel mode loactions</Typography>
                                 </Box>
 
+
+                                <EmailIcon sx={{ color: kolors.primary, fontSize: "16px" }} />
+
+                                <Typography
+                                    sx={{
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: kolors.border,
+                                        textTransform: "capitalize",
+                                    }}                                
+                                >{selectedUserDetails.email}</Typography>
+
                             </Stack>
                         </Box>
 
@@ -281,7 +291,7 @@ const UserDetailsPage = () => {
                             />
 
                             <LastSeenCardComponent 
-                                lastSeen={dayjs(selectedUserDetails.last_login).fromNow()}
+                                lastSeen={timeAgo(selectedUserDetails.last_login)}
                             />
                         </Stack>
 
@@ -302,8 +312,8 @@ const UserDetailsPage = () => {
                                 <ProfileInformationComponent 
                                     bio={selectedUserDetails.userProfile.bio || ''}
                                     // aboutMeData={}
-                                    // lookingForData={}
-                                    // interestedInData={}
+                                    lookingForData={selectedUserDetails.userPreference.ideal_partner_qualities}
+                                    interestedInData={selectedUserDetails.userTrait.hobbies}
                                     editable={false}
                                     saveBtn={() => {}}
                                 />

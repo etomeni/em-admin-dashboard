@@ -3,10 +3,10 @@ import axios from "axios";
 import { useUserStore } from "@/state/userStore";
 import { apiEndpoint } from "@/util/resources";
 import { useSettingStore } from "@/state/settingStore";
-import { stickerInterface } from "@/typeInterfaces/stickers.interface";
+import { reelInterface } from "@/typeInterfaces/reels.interface";
 
 
-export function useStickersHook() {
+export function useReelsHook() {
     // const accessToken = useUserStore((state) => state.accessToken);
     const refreshToken = useUserStore((state) => state.refreshToken);
     const _setToastNotification = useSettingStore((state) => state._setToastNotification);
@@ -22,17 +22,17 @@ export function useStickersHook() {
     const [totalPages, setTotalPages] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [stickers, setStickers] = useState<stickerInterface[]>();
-    const [selectedSticker, setSelectedSticker] = useState<stickerInterface>();
+    const [reels, setReels] = useState<reelInterface[]>();
+    const [selectedReel, setSelectedReel] = useState<reelInterface>();
     
 
-    const getAllSticker = useCallback(async (
+    const getAllReels = useCallback(async (
         pageNo: number = currentPageNo, limit: number = limitNo
     ) => {
         setIsSubmitting(true);
 
         try {
-            const response = (await axios.get(`${apiEndpoint}/admin/sticker/all`, {
+            const response = (await axios.get(`${apiEndpoint}/admin/reel/all`, {
                 headers: {
                     Authorization: `Bearer ${refreshToken}`
                 },
@@ -41,10 +41,10 @@ export function useStickersHook() {
                     limit: limit,
                 }
             })).data;
-            // console.log(response);
+            console.log(response);
 
             if (response.statusCode == 200) {
-                setStickers(response.data);
+                setReels(response.data);
 
                 // setTotalRecords(response.count);
                 setIsSubmitting(false);
@@ -78,19 +78,18 @@ export function useStickersHook() {
         }
     }, []);
 
-    const addNewSticker = useCallback(async (
-        name: string, price: number, sticker_image: any,
+    const addNewReel = useCallback(async (
+        caption: string, reel_image: any,
         exFunc = () => {}
     ) => {
         setIsSubmitting(true);
 
         try {
             const data2db = new FormData();
-            data2db.append('name', name );
-            data2db.append('price', `${price}` );
-            data2db.append('sticker_image', sticker_image );
+            data2db.append('caption', caption );
+            data2db.append('reel_image', reel_image );
 
-            const response = (await axios.post(`${apiEndpoint}/admin/sticker/new`, 
+            const response = (await axios.post(`${apiEndpoint}/admin/reel/new`, 
                 data2db,
                 {
                     headers: {
@@ -112,7 +111,7 @@ export function useStickersHook() {
             // console.log(response);
 
             if (response.statusCode == 200) {
-                // setStickers(response.data);
+                // setReels(response.data);
 
                 // setTotalRecords(response.count);
             }
@@ -153,8 +152,8 @@ export function useStickersHook() {
         }
     }, []);
 
-    const editSticker = useCallback(async (
-        id: string, name: string, price: number, sticker_image: any,
+    const editReel = useCallback(async (
+        id: string, caption: string, reel_image: any,
         exFunc = () => {}
     ) => {
         setIsSubmitting(true);
@@ -162,11 +161,10 @@ export function useStickersHook() {
         try {
             const data2db = new FormData();
             data2db.append('id', id );
-            data2db.append('name', name );
-            data2db.append('price', `${price}` );
-            data2db.append('sticker_image', sticker_image );
+            data2db.append('caption', caption );
+            data2db.append('reel_image', reel_image );
 
-            const response = (await axios.patch(`${apiEndpoint}/admin/sticker/edit`, 
+            const response = (await axios.patch(`${apiEndpoint}/admin/reel/edit`, 
                 data2db,
                 {
                     headers: {
@@ -187,7 +185,7 @@ export function useStickersHook() {
             console.log(response);
 
             if (response.statusCode == 200) {
-                // setStickers(response.data);
+                // setReels(response.data);
 
                 // setTotalRecords(response.count);
             }
@@ -222,13 +220,13 @@ export function useStickersHook() {
         }
     }, []);
 
-    const deleteSticker = useCallback(async (
+    const deleteReel = useCallback(async (
         id: string, exFunc = () => {}
     ) => {
         setIsSubmitting(true);
 
         try {
-            const response = (await axios.delete(`${apiEndpoint}/admin/sticker/delete/${id}`, 
+            const response = (await axios.delete(`${apiEndpoint}/admin/reel/delete/${id}`, 
                 {
                     headers: {
                         Authorization: `Bearer ${refreshToken}`
@@ -238,7 +236,7 @@ export function useStickersHook() {
             console.log(response);
 
             if (response.statusCode == 200) {
-                // setStickers(response.data);
+                // setReels(response.data);
 
                 // setTotalRecords(response.count);
                 setIsSubmitting(false);
@@ -273,11 +271,11 @@ export function useStickersHook() {
         }
     }, []);
 
-    const getStickerById = useCallback(async (id: string) => {
+    const getReelById = useCallback(async (id: string) => {
         setIsSubmitting(true);
 
         try {
-            const response = (await axios.get(`${apiEndpoint}/admin/sticker/${id}`, {
+            const response = (await axios.get(`${apiEndpoint}/admin/reel/${id}`, {
                 headers: {
                     Authorization: `Bearer ${refreshToken}`
                 }
@@ -285,7 +283,7 @@ export function useStickersHook() {
             // console.log(response);
 
             if (response.statusCode == 200) {
-                setSelectedSticker(response.data);
+                setSelectedReel(response.data);
             }
     
             _setToastNotification({
@@ -314,7 +312,8 @@ export function useStickersHook() {
 
     return {
         apiResponse, setApiResponse,
-
+        _setToastNotification,
+        
         limitNo, setLimitNo,
         currentPageNo, setCurrentPageNo,
         totalRecords, setTotalRecords,
@@ -322,13 +321,13 @@ export function useStickersHook() {
 
         isSubmitting,
 
-        stickers,
-        selectedSticker, setSelectedSticker,
+        reels,
+        selectedReel, setSelectedReel,
 
-        getAllSticker,
-        getStickerById,
-        addNewSticker,
-        editSticker,
-        deleteSticker,
+        getAllReels,
+        getReelById,
+        addNewReel,
+        editReel,
+        deleteReel,
     }
 }

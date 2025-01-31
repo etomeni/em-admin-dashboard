@@ -19,6 +19,7 @@ import CustomBgTab, { menuItemsInterface } from '@/components/sunday/dashboard/C
 import EmptyListComponent from '@/components/EmptyList';
 import LoadingDataComponent from '@/components/LoadingData';
 import { calculateAge } from '@/util/timeNdate';
+import { formatedNumber } from '@/util/resources';
 
 
 const UsersPage = () => {
@@ -178,7 +179,7 @@ const UsersPage = () => {
                             fontSize: "40px",
                             color: kolors.primary,
                         }}
-                    >10,000</Typography>
+                    >{ formatedNumber(Number(totalRecords)) }</Typography>
 
                     <Box mt={3} width={{xs: "100%", sm: "80%", md: "70%", lg: "50%"}}>
                         <Typography
@@ -226,7 +227,7 @@ const UsersPage = () => {
                                             >
                                                 <TableCell component="th" scope="row">
                                                     <Stack direction='row' spacing="5px"
-                                                        alignItems="center"
+                                                        alignItems="center" sx={{textTransform: "capitalize"}}
                                                     >
                                                         <Stack direction="row" spacing="5px" alignItems="center">
                                                             <Typography
@@ -249,11 +250,11 @@ const UsersPage = () => {
                                                     </Stack>
                                                 </TableCell>
                                                 
-                                                <TableCell>
+                                                <TableCell sx={{textTransform: "capitalize"}}>
                                                     {userData.userLocation.city + ", " + userData.userLocation.state}
                                                 </TableCell>
 
-                                                <TableCell>
+                                                <TableCell sx={{textTransform: "capitalize"}}>
                                                     {userData.userTrait && userData.userTrait.gender || ''}
                                                 </TableCell>
 

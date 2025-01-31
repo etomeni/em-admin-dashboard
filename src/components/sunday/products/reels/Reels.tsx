@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import kolors from '@/constants/kolors';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 import cloudUploadIcon from "@/assets/images/cloudUploadIcon.png";
 import { convertToBase64 } from '@/util/resources';
 import { themeBtnStyle } from '@/util/mui';
+import { useReelsHook } from '@/hooks/products/useReelsHook';
+import { Typography } from '@mui/material';
 
 interface _Props {
     // performSearch: (searchword: string) => void
@@ -18,8 +25,37 @@ const numberArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 const ReelsComponent: React.FC<_Props> = ({
     // performSearch
 }) => {
-    const [reelVideoInput, setReelVideoInput] = useState('');
+    const [captionInput, setCaptionInput] = useState('');
+    const [reelVideoInput, setReelVideoInput] = useState<any>();
     const [reelVideoPreview, setReelVideoPreview] = useState('');
+
+    const {
+        reels,
+        // selectedReel, 
+        setSelectedReel,
+        _setToastNotification,
+
+        // isSubmitting,
+        // getReelById,
+        getAllReels,
+        // editReel,
+        addNewReel,
+        deleteReel,
+    } = useReelsHook();
+
+    useEffect(() => {
+        getAllReels();
+    }, []);
+
+    const [anchorMoreReelEl, setAnchorMoreReelEl] = useState<null | HTMLElement>(null);
+    const openMoreReel = Boolean(anchorMoreReelEl);
+    const handleClickMoreReel = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorMoreReelEl(event.currentTarget);
+    };
+    const handleCloseMoreReel = () => {
+        setAnchorMoreReelEl(null);
+    };
+
 
     const handleFileUpload = async (e: any) => {
         const file = e.target.files[0]; 
@@ -33,10 +69,33 @@ const ReelsComponent: React.FC<_Props> = ({
     }
 
     const handleSubmit = () => {
-        if (!reelVideoInput) {
-            return "reels video is required."
+        if (!captionInput) {
+            _setToastNotification({
+                display: true,
+                status: "error",
+                message: "reels caption is required."
+            });
+            return;
         }
 
+        if (!reelVideoInput) {
+            _setToastNotification({
+                display: true,
+                status: "error",
+                message: "reels video is required."
+            });
+
+            return;
+        }
+
+
+        addNewReel(
+            captionInput,
+            reelVideoInput,
+            () => {
+
+            }
+        )
 
     }
 
@@ -106,11 +165,11 @@ const ReelsComponent: React.FC<_Props> = ({
 
                                         }}
             
-                                        // value={messageInput}
+                                        value={captionInput}
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            console.log(value);
-                                            // setMessageInput(value);
+                                            // console.log(value);
+                                            setCaptionInput(value);
                                         }}
                                     />
                                 </Box>
@@ -159,17 +218,115 @@ const ReelsComponent: React.FC<_Props> = ({
                             alignItems="center"
                         >
                             {
-                                numberArray.map((_item, index) => (
-                                    <Box key={index}
+                                reels ? 
+                                    reels.length ?
+                                        reels.map((item, index) => (
+                                            <Box key={item.id}
+                                                sx={{
+                                                    width: "100px",
+                                                    height: "110px",
+                                                    bgcolor: "#D9D9D9",
+                                                    position: "relative",
+                                                }}
+                                            >
+                                                <Box sx={{ position: "absolute", top: 1, right: 1, zIndex: 2 }}>
+                                                    <IconButton
+                                                        aria-label={`MoreReel-${index}`}
+                                                        id={`MoreReel-button-${index}`}
+                                                        size='small'
+                                                        aria-controls={openMoreReel ? `MoreReel-menu-${index}` : undefined}
+                                                        aria-expanded={openMoreReel ? 'true' : undefined}
+                                                        aria-haspopup="true"
+                                                        onClick={handleClickMoreReel}
+                                                    >
+                                                        <MoreVertIcon />
+                                                    </IconButton>
+
+                                                    <Menu
+                                                        id={`MoreReel-menu-${index}`}
+                                                        MenuListProps={{
+                                                            'aria-labelledby': `MoreReel-button-${index}`,
+                                                        }}
+                                                        anchorEl={anchorMoreReelEl}
+                                                        open={openMoreReel}
+                                                        onClose={handleCloseMoreReel}
+                                                    >
+                                                        <MenuItem 
+                                                            onClick={() => {
+                                                                setSelectedReel(item);
+                                                                handleCloseMoreReel();
+                                                            }}
+                                                        >Edit</MenuItem>
+
+                                                        <MenuItem 
+                                                            onClick={() =>{
+                                                                deleteReel(
+                                                                    item.id,
+                                                                    () => {
+                                                                        getAllReels();
+                                                                        handleCloseMoreReel();
+
+                                                                        // setTimeout(() => {
+                                                                        //     getAllReels();
+                                                                        //     handleCloseMoreReel();
+                                                                        // }, 1000);
+                                                                    }
+                                                                    
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Box 
+                                                                sx={{
+                                                                    bgcolor: "#A80D05",
+                                                                    py: "10px",
+                                                                    px: "20px",
+                                                                    borderRadius: "4px",
+                                                                }}
+                                                            >
+                                                                <Typography
+                                                                    sx={{
+                                                                        fontWeight: "700",
+                                                                        fontSize: "13px",
+                                                                        color: "16px",
+                                                                        textAlign: "center"
+                                                                    }}
+                                                                >Delete</Typography>
+                                                            </Box>
+                                                        </MenuItem>
+                                                    </Menu>
+                                                </Box>
+
+                                                <video loop autoPlay
+                                                    src={item.url}
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        objectFit: "cover",
+                                                        position: "absolute",
+                                                        top: 0,
+                                                        // display: item.url ? "initial" : "none"
+                                                    }}
+                                                />
+                                            </Box>
+                                        ))
+                                    : 
+                                    numberArray.map((_item, index) => (
+                                        <Box key={index}
+                                            sx={{
+                                                width: "100px",
+                                                height: "110px",
+                                                bgcolor: "#D9D9D9",
+                                            }}
+                                        > </Box>
+                                    ))
+                                : 
+                                    <Box
                                         sx={{
                                             width: "100px",
                                             height: "110px",
                                             bgcolor: "#D9D9D9",
                                         }}
-                                    >
-
-                                    </Box>
-                                ))
+                                    > </Box>
                             }
                         </Stack>
 

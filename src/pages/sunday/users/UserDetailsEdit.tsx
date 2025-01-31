@@ -26,11 +26,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useUsersHook } from '@/hooks/users/useUsersHook';
 import { useNavigate, useParams } from 'react-router-dom';
 import { currencyDisplay } from '@/util/resources';
-import dayjs from 'dayjs';
-import relativeTime from "dayjs/plugin/relativeTime";
-
-dayjs.extend(relativeTime);
-
+import { timeAgo } from '@/util/timeNdate';
 
 
 
@@ -239,7 +235,7 @@ const UserDetailsEditProfilePage = () => {
                             />
 
                             <LastSeenCardComponent 
-                                lastSeen={dayjs(selectedUserDetails.last_login).fromNow()}
+                                lastSeen={timeAgo(selectedUserDetails.last_login)}
                             />
                         </Stack>
 
@@ -267,7 +263,9 @@ const UserDetailsEditProfilePage = () => {
                                     borderRadius: "8px",
                                 }}
                             >
-                                <ReceivedStickersGiftsComponent />
+                                <ReceivedStickersGiftsComponent 
+                                    userData={selectedUserDetails}
+                                />
                             </Grid>
 
                         </Grid>
@@ -277,8 +275,6 @@ const UserDetailsEditProfilePage = () => {
                     </Box>
                 : <></>
             }
-
-
 
 
             <TravelLocationModal 
