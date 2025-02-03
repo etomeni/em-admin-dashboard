@@ -162,7 +162,7 @@ const PaymentsPage = () => {
                                                                             // lineHeight: "20px",
                                                                             textTransform: "capitalize"
                                                                         }}
-                                                                    >{ transaction.user }</Typography>
+                                                                    >{ transaction.date }</Typography>
                                                                 </TableCell>
 
                                                                 <TableCell
@@ -172,7 +172,7 @@ const PaymentsPage = () => {
                                                                         fontWeight: "500",
                                                                         lineHeight: "20px"
                                                                     }}
-                                                                >{ transaction.date }</TableCell>
+                                                                >{ transaction.user }</TableCell>
 
                                                                 <TableCell>
                                                                     <Chip 

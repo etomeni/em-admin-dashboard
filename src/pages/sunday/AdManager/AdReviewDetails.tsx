@@ -10,11 +10,23 @@ import { themeBtnStyle } from '@/util/mui';
 import mtnLogo from "@/assets/images/mtn2.png";
 // import { useNavigate } from 'react-router-dom';
 import BackNavigationArrowBtn from '@/components/sunday/BackNavigationArrowBtn';
+// import { useAdvertiseHook } from '@/hooks/advertise/useAdvertiseHook';
+import { useEffect } from 'react';
 
 
 
 const AdReviewDetailsPage = () => {
     // const navigate = useNavigate();
+
+    // const { 
+    //     pendingAdvertisement,  
+    //     getPendingAdvertisements,
+    // } = useAdvertiseHook();
+
+    useEffect(() => {
+        // getPendingAdvertisements();
+    }, []);
+    
 
     return (
         <Box mb={5}

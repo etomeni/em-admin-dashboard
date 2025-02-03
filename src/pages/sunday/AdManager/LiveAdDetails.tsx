@@ -10,12 +10,11 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import IconButton from '@mui/material/IconButton';
 
 import NotificationComponent from '@/components/sunday/NotificationComponent';
 import { themeBtnStyle } from '@/util/mui';
 import mtnLogo from "@/assets/images/mtn2.png";
+import BackNavigationArrowBtn from '@/components/sunday/BackNavigationArrowBtn';
 
 
 const LiveAdDetailsPage = () => {
@@ -27,16 +26,13 @@ const LiveAdDetailsPage = () => {
                 border: `1px solid ${kolors.border}`,
                 bgcolor: "#fff",
                 borderRadius: 2,
-                p: 2,
-                my: 3
+                p: 2, my: 3,
             }}
         >
             <Stack direction='row' gap='10px' flexWrap="wrap"
                 alignItems="center" justifyContent="space-between"
             >
-                <IconButton size='small' onClick={() => navigate(-1)}>
-                    <NavigateBeforeIcon sx={{ fontSize: "24px" }} />
-                </IconButton>
+                <BackNavigationArrowBtn />
 
                 <NotificationComponent />
             </Stack>
@@ -250,7 +246,6 @@ const LiveAdDetailsPage = () => {
                         label="Switch off AD"
                     />
                 </Box>
-
 
             </Box>
             
