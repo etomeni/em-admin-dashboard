@@ -19,7 +19,7 @@ export function useCheckAuth() {
         const access_token = getLocalStorage("access_token")
         const refresh_token = getLocalStorage("refreshToken");
         const user_data = getLocalStorage("user");
-        console.log("hello");
+        // console.log("hello");
         
         if (!access_token || !refresh_token || !user_data ) {
             setIsLoading(false);

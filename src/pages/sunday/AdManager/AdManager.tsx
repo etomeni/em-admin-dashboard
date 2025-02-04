@@ -20,7 +20,7 @@ import NotificationComponent from '@/components/sunday/NotificationComponent';
 import SearchwordComponent from '@/components/sunday/SearchwordComponent';
 import { themeBtnStyle } from '@/util/mui';
 
-import mtnLogo from "@/assets/images/mtn2.png";
+// import mtnLogo from "@/assets/images/mtn2.png";
 import { CustomTabContentPanel } from '@/components/sunday/CustomTabContentPanel';
 import { useAdvertiseHook } from '@/hooks/advertise/useAdvertiseHook';
 import EmptyListComponent from '@/components/EmptyList';
@@ -126,17 +126,16 @@ const AdManagerPage = () => {
                                     }}
                                 >
                                     <MenuItem onClick={() => {
-
                                         handleCloseFilter();
                                     }}
                                     >All</MenuItem>
-                                    <MenuItem onClick={() => {
 
+                                    <MenuItem onClick={() => {
                                         handleCloseFilter();
                                     }}
                                     >Inprofile</MenuItem>
-                                    <MenuItem onClick={() => {
 
+                                    <MenuItem onClick={() => {
                                        handleCloseFilter(); 
                                     }}>Banner</MenuItem>
                                 </Menu>
@@ -159,9 +158,6 @@ const AdManagerPage = () => {
                         pendingAdvertisement ? 
                             pendingAdvertisement.length ? 
                                 <List disablePadding >
-                                    {/* <AdsComponent 
-                                        onClick={() => navigate("review-details")}
-                                    /> */}
                                     {
                                         pendingAdvertisement.map((item) => (
                                             <AdsComponent 
@@ -189,9 +185,6 @@ const AdManagerPage = () => {
                         liveAdvertisement ? 
                             liveAdvertisement.length ? 
                                 <List disablePadding >
-                                    {/* <AdsComponent 
-                                        onClick={() => navigate("live-details")}
-                                    /> */}
                                     {
                                         liveAdvertisement.map((item) => (
                                             <AdsComponent 
@@ -252,7 +245,7 @@ const AdsComponent: React.FC<_Props> = ({
                 <ListItemAvatar>
                     <Avatar variant="square"
                         alt="ads manager" 
-                        src={adsData.image_url || mtnLogo}
+                        src={adsData.image_url}
                         sx={{ 
                             width: "auto", 
                             height: "auto",
@@ -265,8 +258,8 @@ const AdsComponent: React.FC<_Props> = ({
 
                 <Box px={2}>
                     <ListItemText
-                        primary={adsData.title || "MTN every where you go"} 
-                        secondary={adsData.description || "Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat sit quibusdam quas possimus. Ullam blanditiis aut tempora debitis placeat in eligendi fugit? Aut aperiam et natus voluptatibus harum iusto tempore?" }
+                        primary={adsData.title || ""} 
+                        secondary={adsData.description || "" }
                     />
                 </Box>
             </ListItemButton>

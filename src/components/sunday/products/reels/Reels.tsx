@@ -296,7 +296,7 @@ const ReelsComponent: React.FC<_Props> = ({
                                                     </Menu>
                                                 </Box>
 
-                                                <video loop autoPlay
+                                                <video // loop autoPlay muted
                                                     src={item.url}
                                                     style={{
                                                         width: "100%",

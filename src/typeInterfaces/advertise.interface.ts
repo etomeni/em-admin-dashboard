@@ -7,6 +7,8 @@ export type advertiseInterface = {
     title: string;
     ad_type: string;
     placement: string;
+    section: string[];
+    stats: any;
     status: string;
     location: {
         city: string;
@@ -14,7 +16,7 @@ export type advertiseInterface = {
         country: string;
     },
     duration: number,
-    daily_budget: string;
+    daily_budget: number;
     declined_note: string;
     description: string;
     created_at: string;
@@ -31,6 +33,7 @@ export type advertiseInterface = {
         admin_id: number
     }
 }
+
 
 
 export type placesLocationInterface = {

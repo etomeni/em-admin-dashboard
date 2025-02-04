@@ -36,19 +36,11 @@ const bannerAdsValue = ["Places", "Books", "Events"];
 
 const NewEditAdDetailsPage = () => {
     // const navigate = useNavigate();
-    // const {_id} = useParams();
+    // const {id} = useParams();
 
     const [selectedPlacement, setSelectedPlacement] = useState("Placement");
     const [bannerAdsLocation, setBannerAdsLocation] = useState<string[]>([]);
-    // const [value, setValue] = useState<number>(30);
 
-    // const handleChange = (_event: Event, newValue: number | number[]) => {
-    //     setValue(newValue as number);
-
-    //     console.log(_id);
-        
-    // };
-  
 
     const [placementAnchorEl, setPlacementAnchorEl] = useState<null | HTMLElement>(null);
     const openPlacementMenu = Boolean(placementAnchorEl);
@@ -59,22 +51,6 @@ const NewEditAdDetailsPage = () => {
         setPlacementAnchorEl(null);
     };
     
-
-    // const [iconInputValue, setIconInputValue] = useState('');
-    // // const [inputIconImage, setInputIconImage] = useState<any>();
-
-
-    // const handleFileUpload = async (e: any) => {
-    //     const file = e.target.files[0]; 
-    //     // setInputIconImage(file);
-
-    //     const base64 = await convertToBase64(file);
-    //     console.log(base64.result);
-    //     setIconInputValue(base64.result);
-    
-    //     e.target.value = "";
-    // }
-
 
     
     return (
@@ -204,9 +180,13 @@ const NewEditAdDetailsPage = () => {
                 <Box maxWidth="520px" mx="auto">
                     {
                         selectedPlacement == "Inprofile Ads" ?
-                            <NewEditInprofileAdsComponent adsPlacement={"Inprofile Ads"} />
+                            <NewEditInprofileAdsComponent 
+                                adsPlacement={"Inprofile Ads"} 
+                            />
                         :
-                            <NewEditBannerAdsComponent adsPlacement={bannerAdsLocation.toString() || selectedPlacement} />
+                            <NewEditBannerAdsComponent 
+                                adsPlacement={bannerAdsLocation.toString() || selectedPlacement} 
+                            />
                     }
 
                 </Box>

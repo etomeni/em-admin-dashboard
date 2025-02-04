@@ -43,7 +43,7 @@ export function useAdvertiseHook() {
                     limit: limit,
                 }
             })).data;
-            console.log(response);
+            // console.log(response);
 
             if (response.statusCode == 200) {
                 setPendingAdvertisement(response.data);
@@ -62,7 +62,7 @@ export function useAdvertiseHook() {
 
             setApiResponse({
                 display: true,
-                status: false,
+                status: true,
                 message: response.message
             });
 
@@ -103,7 +103,7 @@ export function useAdvertiseHook() {
                     limit: limit,
                 }
             })).data;
-            console.log(response);
+            // console.log(response);
 
             if (response.statusCode == 200) {
                 setLiveAdvertisement(response.data);
@@ -121,7 +121,7 @@ export function useAdvertiseHook() {
 
             setApiResponse({
                 display: true,
-                status: false,
+                status: true,
                 message: response.message
             });
 
@@ -152,6 +152,12 @@ export function useAdvertiseHook() {
     const getAdvertisementsById = useCallback(async (id: string) => {
         setIsSubmitting(true);
 
+        setApiResponse({
+            display: false,
+            status: false,
+            message: ''
+        });
+
         try {
             const response = (await axios.get(`${apiEndpoint}/admin/advertise/${id}`, {
                 headers: {
@@ -178,11 +184,11 @@ export function useAdvertiseHook() {
                 message: response.message
             });
 
-            setApiResponse({
-                display: true,
-                status: false,
-                message: response.message
-            });
+            // setApiResponse({
+            //     display: true,
+            //     status: true,
+            //     message: response.message
+            // });
 
             setIsSubmitting(false);
 
@@ -198,11 +204,11 @@ export function useAdvertiseHook() {
                 message: err.errors && err.length ? err[0].message : err.message || fixedErrorMsg
             });
 
-            setApiResponse({
-                display: true,
-                status: false,
-                message: err.errors && err.length ? err[0].message : err.message || fixedErrorMsg
-            });
+            // setApiResponse({
+            //     display: true,
+            //     status: false,
+            //     message: err.errors && err.length ? err[0].message : err.message || fixedErrorMsg
+            // });
 
             setIsSubmitting(false);
         }

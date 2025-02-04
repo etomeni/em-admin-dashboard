@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -29,7 +29,7 @@ const NewEditBannerAdsComponent: React.FC<_Props> = ({
     adsPlacement 
 }) => {
     // const navigate = useNavigate();
-    const {_id} = useParams();
+    const {id} = useParams();
     const apiKey = `${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}`;
 
     const [durationValue, setDurationValue] = useState<number>(30);
@@ -50,6 +50,37 @@ const NewEditBannerAdsComponent: React.FC<_Props> = ({
         },
     });
 
+
+    const { 
+        apiResponse, setApiResponse,
+        isSubmitting,
+        selectedAdvertisement,
+        getAdvertisementsById,
+        createNewAdvertisementBanner,
+
+        // locationPlacesResults, setLocationPlacesResults,
+        // searchLocationPlaces,
+    } = useAdvertiseHook();
+    
+    useEffect(() => {
+        if (id) {
+            getAdvertisementsById(id || '');
+        }
+    }, [id]);
+
+    useEffect(() => {
+        if (selectedAdvertisement) {
+            // setAdTitle(selectedAdvertisement.title || '');
+            // setAdDescription(selectedAdvertisement.description || '');
+            setIconInputValue(selectedAdvertisement.image_url || '');
+            setInputAdLinkValue(selectedAdvertisement.action_url || '');
+            
+            // if (selectedAdvertisement.location && selectedAdvertisement.location.length) {
+            //     setSelectedLocationPlace(selectedAdvertisement.location);
+            // }
+
+        }
+    }, [selectedAdvertisement]);
 
     const handleSelectPlace = (place: any) => {
         const formattedPlace = formatPlace(place);
@@ -80,8 +111,6 @@ const NewEditBannerAdsComponent: React.FC<_Props> = ({
 
     const handleDurationChange = (_event: Event, newValue: number | number[]) => {
         setDurationValue(newValue as number);
-
-        console.log(_id);
     };
 
     const formatPlace = (place: any) => {
@@ -102,14 +131,6 @@ const NewEditBannerAdsComponent: React.FC<_Props> = ({
         return { city, state, country };
     };
 
-    const { 
-        apiResponse, setApiResponse,
-        isSubmitting,
-        createNewAdvertisementBanner,
-
-        // locationPlacesResults, setLocationPlacesResults,
-        // searchLocationPlaces,
-    } = useAdvertiseHook();
     
 
     const handleFileUpload = async (e: any) => {

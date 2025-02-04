@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import kolors from '@/constants/kolors';
 import Box from '@mui/material/Box';
@@ -29,7 +29,7 @@ const NewEditInprofileAdsComponent: React.FC<_Props> = ({
     adsPlacement 
 }) => {
     // const navigate = useNavigate();
-    const {_id} = useParams();
+    const {id} = useParams();
     const apiKey = `${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}`;
 
     const [durationValue, setDurationValue] = useState<number>(30);
@@ -52,6 +52,36 @@ const NewEditInprofileAdsComponent: React.FC<_Props> = ({
             types: ["geocode", "establishment"],
         },
     });
+    
+    const { 
+        apiResponse, setApiResponse,
+        isSubmitting,
+        selectedAdvertisement,
+        getAdvertisementsById,
+        createNewInprofileAdvertisement,
+    } = useAdvertiseHook();
+
+
+    useEffect(() => {
+        if (id) {
+            getAdvertisementsById(id || '');
+        }
+    }, [id]);
+
+    useEffect(() => {
+        if (selectedAdvertisement) {
+            setAdTitle(selectedAdvertisement.title || '');
+            setAdDescription(selectedAdvertisement.description || '');
+            setIconInputValue(selectedAdvertisement.image_url || '');
+            setInputAdLinkValue(selectedAdvertisement.action_url || '');
+            
+            // if (selectedAdvertisement.location && selectedAdvertisement.location.length) {
+            //     setSelectedLocationPlace(selectedAdvertisement.location);
+            // }
+
+        }
+    }, [selectedAdvertisement]);
+
 
     const handleSelectPlace = (place: any) => {
         const formattedPlace = formatPlace(place);
@@ -83,7 +113,6 @@ const NewEditInprofileAdsComponent: React.FC<_Props> = ({
     const handleDurationChange = (_e: Event, newValue: number | number[]) => {
         setDurationValue(newValue as number);
 
-        console.log(_id);
         console.log(adsPlacement);
     };
 
@@ -105,11 +134,7 @@ const NewEditInprofileAdsComponent: React.FC<_Props> = ({
         return { city, state, country };
     };
 
-    const { 
-        apiResponse, setApiResponse,
-        isSubmitting,
-        createNewInprofileAdvertisement,
-    } = useAdvertiseHook();
+  
 
     const handleFileUpload = async (e: any) => {
         const file = e.target.files[0]; 
