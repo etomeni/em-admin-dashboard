@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import kolors from '@/constants/kolors';
 import Button from '@mui/material/Button';
@@ -29,16 +29,20 @@ const ReelsComponent: React.FC<_Props> = ({
     const [reelVideoInput, setReelVideoInput] = useState<any>();
     const [reelVideoPreview, setReelVideoPreview] = useState('');
 
+    const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+    const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
+
+    
     const {
         reels,
-        // selectedReel, 
+        selectedReel, 
         setSelectedReel,
         _setToastNotification,
 
         // isSubmitting,
-        // getReelById,
+        getReelById,
         getAllReels,
-        // editReel,
+        editReel,
         addNewReel,
         deleteReel,
     } = useReelsHook();
@@ -46,6 +50,13 @@ const ReelsComponent: React.FC<_Props> = ({
     useEffect(() => {
         getAllReels();
     }, []);
+
+    useEffect(() => {
+        if (selectedReel) {
+            setCaptionInput(selectedReel.caption || '');
+            setReelVideoPreview(selectedReel.url || '');
+        }
+    }, [selectedReel]);
 
     const [anchorMoreReelEl, setAnchorMoreReelEl] = useState<null | HTMLElement>(null);
     const openMoreReel = Boolean(anchorMoreReelEl);
@@ -89,15 +100,52 @@ const ReelsComponent: React.FC<_Props> = ({
         }
 
 
-        addNewReel(
-            captionInput,
-            reelVideoInput,
-            () => {
-
-            }
-        )
+        if (selectedReel && selectedReel.id) {
+            editReel(
+                selectedReel.id,
+                captionInput,
+                reelVideoInput,
+                () => {}
+            );
+        } else {
+            addNewReel(
+                captionInput,
+                reelVideoInput,
+                () => {
+    
+                }
+            );
+        }
 
     }
+
+
+    const togglePlayStop = (index: number) => {
+        const video = videoRefs.current[index];
+
+        if (video) {
+            if (currentlyPlaying === index) {
+                // If the clicked video is already playing, stop it
+                video.pause();
+                video.currentTime = 0;
+                setCurrentlyPlaying(null);
+            } else {
+                // If another video is playing, stop it first
+                if (currentlyPlaying !== null) {
+                    const currentlyPlayingVideo = videoRefs.current[currentlyPlaying];
+                    if (currentlyPlayingVideo) {
+                        currentlyPlayingVideo.pause();
+                        currentlyPlayingVideo.currentTime = 0;
+                    }
+                }
+                // Play the new video
+                video.play();
+                // video.loop = !video.loop;
+                // video.muted = !video.muted;
+                setCurrentlyPlaying(index);
+            }
+        }
+    };
 
 
     
@@ -227,7 +275,10 @@ const ReelsComponent: React.FC<_Props> = ({
                                                     height: "110px",
                                                     bgcolor: "#D9D9D9",
                                                     position: "relative",
+                                                    overflow: "hidden",
+                                                    borderRadius: "2px"
                                                 }}
+                                                onClick={() => { togglePlayStop(index); }}
                                             >
                                                 <Box sx={{ position: "absolute", top: 1, right: 1, zIndex: 2 }}>
                                                     <IconButton
@@ -236,8 +287,16 @@ const ReelsComponent: React.FC<_Props> = ({
                                                         size='small'
                                                         aria-controls={openMoreReel ? `MoreReel-menu-${index}` : undefined}
                                                         aria-expanded={openMoreReel ? 'true' : undefined}
-                                                        aria-haspopup="true"
+                                                        // aria-haspopup="true"
                                                         onClick={handleClickMoreReel}
+                                                        sx={{
+                                                            bgcolor: kolors.tertiary,
+                                                            color: "#fff",
+                                                            ':hover': {
+                                                                bgcolor: kolors.tertiary,
+                                                                color: "#fff"
+                                                            }
+                                                        }}
                                                     >
                                                         <MoreVertIcon />
                                                     </IconButton>
@@ -253,8 +312,12 @@ const ReelsComponent: React.FC<_Props> = ({
                                                     >
                                                         <MenuItem 
                                                             onClick={() => {
+                                                                console.log(item);
+                                                                
                                                                 setSelectedReel(item);
                                                                 handleCloseMoreReel();
+
+                                                                getReelById(item.id);
                                                             }}
                                                         >Edit</MenuItem>
 
@@ -265,13 +328,7 @@ const ReelsComponent: React.FC<_Props> = ({
                                                                     () => {
                                                                         getAllReels();
                                                                         handleCloseMoreReel();
-
-                                                                        // setTimeout(() => {
-                                                                        //     getAllReels();
-                                                                        //     handleCloseMoreReel();
-                                                                        // }, 1000);
                                                                     }
-                                                                    
                                                                 );
                                                             }}
                                                         >
@@ -296,13 +353,14 @@ const ReelsComponent: React.FC<_Props> = ({
                                                     </Menu>
                                                 </Box>
 
-                                                <video // loop autoPlay muted
+                                                <video loop // loop autoPlay muted
                                                     src={item.url}
+                                                    ref={(el) => (videoRefs.current[index] = el)}
                                                     style={{
                                                         width: "100%",
                                                         height: "100%",
                                                         objectFit: "cover",
-                                                        position: "absolute",
+                                                        // position: "absolute",
                                                         top: 0,
                                                         // display: item.url ? "initial" : "none"
                                                     }}
