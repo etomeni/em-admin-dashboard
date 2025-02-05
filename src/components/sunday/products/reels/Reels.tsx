@@ -32,7 +32,6 @@ const ReelsComponent: React.FC<_Props> = ({
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
     const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
 
-    
     const {
         reels,
         selectedReel, 
@@ -58,22 +57,21 @@ const ReelsComponent: React.FC<_Props> = ({
         }
     }, [selectedReel]);
 
-    const [anchorMoreReelEl, setAnchorMoreReelEl] = useState<null | HTMLElement>(null);
-    const openMoreReel = Boolean(anchorMoreReelEl);
-    const handleClickMoreReel = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorMoreReelEl(event.currentTarget);
-    };
-    const handleCloseMoreReel = () => {
-        setAnchorMoreReelEl(null);
+    const [anchorMoreReelEl, setAnchorMoreReelEl] = useState<{ [key: string]: HTMLElement | null }>({});
+
+    const handleClickMoreReel = (event: React.MouseEvent<HTMLElement>, id: string) => {
+        setAnchorMoreReelEl(prev => ({ ...prev, [id]: event.currentTarget }));
     };
 
+    const handleCloseMoreReel = (id: string) => {
+        setAnchorMoreReelEl(prev => ({ ...prev, [id]: null }));
+    };
 
     const handleFileUpload = async (e: any) => {
         const file = e.target.files[0]; 
         setReelVideoInput(file);
 
         const base64 = await convertToBase64(file);
-        // console.log(base64.result);
         setReelVideoPreview(base64.result);
     
         e.target.value = "";
@@ -99,7 +97,6 @@ const ReelsComponent: React.FC<_Props> = ({
             return;
         }
 
-
         if (selectedReel && selectedReel.id) {
             editReel(
                 selectedReel.id,
@@ -111,26 +108,20 @@ const ReelsComponent: React.FC<_Props> = ({
             addNewReel(
                 captionInput,
                 reelVideoInput,
-                () => {
-    
-                }
+                () => {}
             );
         }
-
     }
-
 
     const togglePlayStop = (index: number) => {
         const video = videoRefs.current[index];
 
         if (video) {
             if (currentlyPlaying === index) {
-                // If the clicked video is already playing, stop it
                 video.pause();
                 video.currentTime = 0;
                 setCurrentlyPlaying(null);
             } else {
-                // If another video is playing, stop it first
                 if (currentlyPlaying !== null) {
                     const currentlyPlayingVideo = videoRefs.current[currentlyPlaying];
                     if (currentlyPlayingVideo) {
@@ -138,22 +129,16 @@ const ReelsComponent: React.FC<_Props> = ({
                         currentlyPlayingVideo.currentTime = 0;
                     }
                 }
-                // Play the new video
                 video.play();
-                // video.loop = !video.loop;
-                // video.muted = !video.muted;
                 setCurrentlyPlaying(index);
             }
         }
     };
 
-
-    
     return (
         <Box
             sx={{
                 border: `1px solid ${kolors.border}`,
-                // bgcolor: "#fff",
                 borderRadius: 2,
                 p: 1.5,
                 my: 3
@@ -192,23 +177,18 @@ const ReelsComponent: React.FC<_Props> = ({
                                         fullWidth
                                         type='text'
                                         placeholder='Write a caption for this post...'
-                                        // label="Caption"
-                                        // size='small'
                                         multiline
                                         rows={5}
                                         sx={{
-                                            // ...authMuiTextFieldStyle,
-                                            // maxHeight: "160px"
                                             zIndex: 1,
                                             color: kolors.primary,
 
-                                            '& .MuiInputBase-input': { // Target input text
+                                            '& .MuiInputBase-input': {
                                                 color: reelVideoPreview ? "#fff" : kolors.dark,
                                             },
 
                                             '& .MuiOutlinedInput-root': {
                                                 bgcolor: reelVideoPreview ? "#00000080" : "#ffffff80",
-                                                // color: "#fff"
                                             }
 
                                         }}
@@ -216,7 +196,6 @@ const ReelsComponent: React.FC<_Props> = ({
                                         value={captionInput}
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            // console.log(value);
                                             setCaptionInput(value);
                                         }}
                                     />
@@ -252,7 +231,6 @@ const ReelsComponent: React.FC<_Props> = ({
                                     ...themeBtnStyle,
                                     fontSize: "15px",
                                     fontWeight: "400",
-                                    // lineHeight: 14.52px;
                                 }}
                             > Upload </Button>
                         </Box>
@@ -268,105 +246,104 @@ const ReelsComponent: React.FC<_Props> = ({
                             {
                                 reels ? 
                                     reels.length ?
-                                        reels.map((item, index) => (
-                                            <Box key={item.id}
-                                                sx={{
-                                                    width: "100px",
-                                                    height: "110px",
-                                                    bgcolor: "#D9D9D9",
-                                                    position: "relative",
-                                                    overflow: "hidden",
-                                                    borderRadius: "2px"
-                                                }}
-                                                onClick={() => { togglePlayStop(index); }}
-                                            >
-                                                <Box sx={{ position: "absolute", top: 1, right: 1, zIndex: 2 }}>
-                                                    <IconButton
-                                                        aria-label={`MoreReel-${index}`}
-                                                        id={`MoreReel-button-${index}`}
-                                                        size='small'
-                                                        aria-controls={openMoreReel ? `MoreReel-menu-${index}` : undefined}
-                                                        aria-expanded={openMoreReel ? 'true' : undefined}
-                                                        // aria-haspopup="true"
-                                                        onClick={handleClickMoreReel}
-                                                        sx={{
-                                                            bgcolor: kolors.tertiary,
-                                                            color: "#fff",
-                                                            ':hover': {
+                                        reels.map((item, index) => {
+                                            const menuId = `MoreReel-menu-${item.id}`;
+                                            const buttonId = `MoreReel-button-${item.id}`;
+                                            const isMenuOpen = Boolean(anchorMoreReelEl[item.id]);
+
+                                            return (
+                                                <Box key={item.id}
+                                                    sx={{
+                                                        width: "100px",
+                                                        height: "110px",
+                                                        bgcolor: "#D9D9D9",
+                                                        position: "relative",
+                                                        overflow: "hidden",
+                                                        borderRadius: "2px"
+                                                    }}
+                                                    onClick={() => { togglePlayStop(index); }}
+                                                >
+                                                    <Box sx={{ position: "absolute", top: 1, right: 1, zIndex: 2 }}>
+                                                        <IconButton
+                                                            aria-label={`MoreReel-${index}`}
+                                                            id={buttonId}
+                                                            size='small'
+                                                            aria-controls={isMenuOpen ? menuId : undefined}
+                                                            aria-expanded={isMenuOpen ? 'true' : undefined}
+                                                            onClick={(e) => handleClickMoreReel(e, item.id)}
+                                                            sx={{
                                                                 bgcolor: kolors.tertiary,
-                                                                color: "#fff"
-                                                            }
-                                                        }}
-                                                    >
-                                                        <MoreVertIcon />
-                                                    </IconButton>
-
-                                                    <Menu
-                                                        id={`MoreReel-menu-${index}`}
-                                                        MenuListProps={{
-                                                            'aria-labelledby': `MoreReel-button-${index}`,
-                                                        }}
-                                                        anchorEl={anchorMoreReelEl}
-                                                        open={openMoreReel}
-                                                        onClose={handleCloseMoreReel}
-                                                    >
-                                                        <MenuItem 
-                                                            onClick={() => {
-                                                                console.log(item);
-                                                                
-                                                                setSelectedReel(item);
-                                                                handleCloseMoreReel();
-
-                                                                getReelById(item.id);
-                                                            }}
-                                                        >Edit</MenuItem>
-
-                                                        <MenuItem 
-                                                            onClick={() =>{
-                                                                deleteReel(
-                                                                    item.id,
-                                                                    () => {
-                                                                        getAllReels();
-                                                                        handleCloseMoreReel();
-                                                                    }
-                                                                );
+                                                                color: "#fff",
+                                                                ':hover': {
+                                                                    bgcolor: kolors.tertiary,
+                                                                    color: "#fff"
+                                                                }
                                                             }}
                                                         >
-                                                            <Box 
-                                                                sx={{
-                                                                    bgcolor: "#A80D05",
-                                                                    py: "10px",
-                                                                    px: "20px",
-                                                                    borderRadius: "4px",
+                                                            <MoreVertIcon />
+                                                        </IconButton>
+
+                                                        <Menu
+                                                            id={menuId}
+                                                            MenuListProps={{
+                                                                'aria-labelledby': buttonId,
+                                                            }}
+                                                            anchorEl={anchorMoreReelEl[item.id]}
+                                                            open={isMenuOpen}
+                                                            onClose={() => handleCloseMoreReel(item.id)}
+                                                        >
+                                                            <MenuItem 
+                                                                onClick={() => {
+                                                                    setSelectedReel(item);
+                                                                    handleCloseMoreReel(item.id);
+                                                                    getReelById(item.id);
+                                                                }}
+                                                            >Edit</MenuItem>
+
+                                                            <MenuItem 
+                                                                onClick={() =>{
+                                                                    deleteReel(
+                                                                        item.id,
+                                                                        () => {
+                                                                            getAllReels();
+                                                                            handleCloseMoreReel(item.id);
+                                                                        }
+                                                                    );
                                                                 }}
                                                             >
-                                                                <Typography
+                                                                <Box 
                                                                     sx={{
-                                                                        fontWeight: "700",
-                                                                        fontSize: "13px",
-                                                                        color: "16px",
-                                                                        textAlign: "center"
+                                                                        bgcolor: "#A80D05",
+                                                                        py: "10px",
+                                                                        px: "20px",
+                                                                        borderRadius: "4px",
                                                                     }}
-                                                                >Delete</Typography>
-                                                            </Box>
-                                                        </MenuItem>
-                                                    </Menu>
-                                                </Box>
+                                                                >
+                                                                    <Typography
+                                                                        sx={{
+                                                                            fontWeight: "700",
+                                                                            fontSize: "13px",
+                                                                            color: "16px",
+                                                                            textAlign: "center"
+                                                                        }}
+                                                                    >Delete</Typography>
+                                                                </Box>
+                                                            </MenuItem>
+                                                        </Menu>
+                                                    </Box>
 
-                                                <video loop // loop autoPlay muted
-                                                    src={item.url}
-                                                    ref={(el) => (videoRefs.current[index] = el)}
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        objectFit: "cover",
-                                                        // position: "absolute",
-                                                        top: 0,
-                                                        // display: item.url ? "initial" : "none"
-                                                    }}
-                                                />
-                                            </Box>
-                                        ))
+                                                    <video loop
+                                                        src={item.url}
+                                                        ref={(el) => (videoRefs.current[index] = el)}
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover",
+                                                        }}
+                                                    />
+                                                </Box>
+                                            );
+                                        })
                                     : 
                                     numberArray.map((_item, index) => (
                                         <Box key={index}
@@ -406,5 +383,3 @@ const ReelsComponent: React.FC<_Props> = ({
 }
 
 export default ReelsComponent;
-
-
