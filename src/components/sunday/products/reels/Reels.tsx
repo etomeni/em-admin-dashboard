@@ -280,7 +280,7 @@ const ReelsComponent: React.FC<_Props> = ({
                                                                 }
                                                             }}
                                                         >
-                                                            <MoreVertIcon />
+                                                            <MoreVertIcon sx={{ fontSize: "14px" }} />
                                                         </IconButton>
 
                                                         <Menu

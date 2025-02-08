@@ -384,7 +384,6 @@ export function useAdvertiseHook() {
                 data2db,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${refreshToken}`
                     },
                     onUploadProgress: (progressEvent) => {
