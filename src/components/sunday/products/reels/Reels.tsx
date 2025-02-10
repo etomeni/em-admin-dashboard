@@ -15,12 +15,14 @@ import { convertToBase64 } from '@/util/resources';
 import { themeBtnStyle } from '@/util/mui';
 import { useReelsHook } from '@/hooks/products/useReelsHook';
 import { Typography } from '@mui/material';
+import EmptyListComponent from '@/components/EmptyList';
+import { reelInterface } from '@/typeInterfaces/reels.interface';
+import CircularProgressWithLabel from '../../CircularProgressWithLabel';
 
 interface _Props {
     // performSearch: (searchword: string) => void
 };
 
-const numberArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 
 const ReelsComponent: React.FC<_Props> = ({
     // performSearch
@@ -28,6 +30,7 @@ const ReelsComponent: React.FC<_Props> = ({
     const [captionInput, setCaptionInput] = useState('');
     const [reelVideoInput, setReelVideoInput] = useState<any>();
     const [reelVideoPreview, setReelVideoPreview] = useState('');
+    const [uploadingReel, setUploadingReel] = useState<reelInterface>();
 
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
     const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
@@ -44,6 +47,7 @@ const ReelsComponent: React.FC<_Props> = ({
         editReel,
         addNewReel,
         deleteReel,
+        uploadProgress
     } = useReelsHook();
 
     useEffect(() => {
@@ -97,20 +101,37 @@ const ReelsComponent: React.FC<_Props> = ({
             return;
         }
 
+        setUploadingReel({
+            caption: captionInput,
+            id: '',
+            url: reelVideoPreview
+        });
+
         if (selectedReel && selectedReel.id) {
             editReel(
                 selectedReel.id,
                 captionInput,
                 reelVideoInput,
-                () => {}
+                () => {
+                    setUploadingReel(undefined);
+                    getAllReels();
+                }
             );
         } else {
             addNewReel(
                 captionInput,
                 reelVideoInput,
-                () => {}
+                () => {
+                    setUploadingReel(undefined);
+                    getAllReels();
+                }
             );
         }
+
+        setSelectedReel(undefined);
+        setCaptionInput('');
+        setReelVideoPreview('');
+        setReelVideoInput(undefined);
     }
 
     const togglePlayStop = (index: number) => {
@@ -244,6 +265,51 @@ const ReelsComponent: React.FC<_Props> = ({
                             alignItems="center"
                         >
                             {
+                                uploadingReel ? 
+                                    <Box
+                                        sx={{
+                                            width: "100px",
+                                            height: "110px",
+                                            bgcolor: "#D9D9D9",
+                                            position: "relative",
+                                            overflow: "hidden",
+                                            borderRadius: "2px",
+                                        }}
+                                        // onClick={() => { togglePlayStop(index); }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                bgcolor: "#00000080",
+                                                width: "100%",
+                                                height: "100%",
+                                                position: "absolute",
+                                                // top: 0,
+                                            }}
+                                        >
+                                            <Box sx={{ position: "absolute", top: "45px", right: "40px", zIndex: 2 }}>
+                                                <CircularProgressWithLabel 
+                                                    value={uploadProgress} size={30} 
+                                                    sx={{ color: kolors.tertiary,
+                                                        fontWeight: "bold", mx: 'auto' 
+                                                    }} 
+                                                />
+                                            </Box>
+                                        </Box>
+
+                                        <video loop
+                                            src={uploadingReel.url}
+                                            style={{
+                                                width: "100%",
+                                                height: "100%",
+                                                objectFit: "cover",
+                                            }}
+                                        />
+                                    </Box>
+                                : <></>
+                            }
+
+
+                            {
                                 reels ? 
                                     reels.length ?
                                         reels.map((item, index) => {
@@ -345,15 +411,11 @@ const ReelsComponent: React.FC<_Props> = ({
                                             );
                                         })
                                     : 
-                                    numberArray.map((_item, index) => (
-                                        <Box key={index}
-                                            sx={{
-                                                width: "100px",
-                                                height: "110px",
-                                                bgcolor: "#D9D9D9",
-                                            }}
-                                        > </Box>
-                                    ))
+                                    <Box m="auto">
+                                        <EmptyListComponent 
+                                            notFoundText='No reels found.'
+                                        />
+                                    </Box>
                                 : 
                                     <Box
                                         sx={{

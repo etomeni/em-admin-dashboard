@@ -21,6 +21,7 @@ export function useReelsHook() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const [reels, setReels] = useState<reelInterface[]>();
     const [selectedReel, setSelectedReel] = useState<reelInterface>();
@@ -102,7 +103,7 @@ export function useReelsHook() {
                         const percentage = Math.floor((loaded * 100) / total );
 
                         if (percentage < 100) {
-                            // setSongUploadProgress(percentage);
+                            setUploadProgress(percentage);
                         }
                     },
                 }
@@ -117,6 +118,7 @@ export function useReelsHook() {
             }
             setIsSubmitting(false);
             exFunc()
+            setUploadProgress(0);
 
             _setToastNotification({
                 display: true,
@@ -177,12 +179,12 @@ export function useReelsHook() {
                         const percentage = Math.floor((loaded * 100) / total );
 
                         if (percentage < 100) {
-                            // setSongUploadProgress(percentage);
+                            setUploadProgress(percentage);
                         }
                     },
                 }
             )).data;
-            console.log(response);
+            // console.log(response);
 
             if (response.statusCode == 200) {
                 // setReels(response.data);
@@ -191,6 +193,7 @@ export function useReelsHook() {
             }
             setIsSubmitting(false);
             exFunc()
+            setUploadProgress(0);
 
             _setToastNotification({
                 display: true,
@@ -309,7 +312,6 @@ export function useReelsHook() {
     }, []);
 
 
-
     return {
         apiResponse, setApiResponse,
         _setToastNotification,
@@ -329,5 +331,6 @@ export function useReelsHook() {
         addNewReel,
         editReel,
         deleteReel,
+        uploadProgress,
     }
 }
