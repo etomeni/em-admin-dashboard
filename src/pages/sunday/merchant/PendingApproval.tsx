@@ -14,10 +14,25 @@ import Button from '@mui/material/Button';
 import NotificationComponent from '@/components/sunday/NotificationComponent';
 import { themeBtnStyle } from '@/util/mui';
 import { createSearchParams, useNavigate } from 'react-router-dom';
+// import { useMerchantHook } from '@/hooks/merchants/useMerchantHook';
+// import { useEffect } from 'react';
 
 
 const PendingApprovalPage = () => {
     const navigate = useNavigate();
+    
+    // const {
+    //     pendingMerchants,
+    //     selectedMerchant, setSelectedMerchant,
+
+    //     getAllPendingMerchants,
+    //     getMerchantById,
+    // } = useMerchantHook();
+
+    // useEffect(() => {
+    //     getAllPendingMerchants();
+    // }, []);
+    
 
 
     return (
